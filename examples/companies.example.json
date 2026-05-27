@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Anthropic",
+    "slug": "anthropic",
+    "ats": "greenhouse"
+  },
+  {
+    "name": "OpenAI",
+    "slug": "openai",
+    "ats": "ashby"
+  },
+  {
+    "name": "Modal Labs",
+    "slug": "modal",
+    "ats": "ashby"
+  },
+  {
+    "name": "Replit",
+    "slug": "replit",
+    "ats": "ashby"
+  },
+  {
+    "name": "Cohere",
+    "slug": "Cohere",
+    "ats": "ashby"
+  },
+  {
+    "name": "Cursor (Anysphere)",
+    "slug": "cursor",
+    "ats": "ashby"
+  },
+  {
+    "name": "Stripe",
+    "slug": "stripe",
+    "ats": "greenhouse"
+  },
+  {
+    "name": "Vercel",
+    "slug": "vercel",
+    "ats": "greenhouse"
+  },
+  {
+    "name": "Linear",
+    "slug": "linear",
+    "ats": "ashby"
+  },
+  {
+    "name": "Notion",
+    "slug": "notion",
+    "ats": "ashby"
+  },
+  {
+    "name": "Figma",
+    "slug": "figma",
+    "ats": "greenhouse"
+  },
+  {
+    "name": "Perplexity",
+    "slug": "perplexity",
+    "ats": "ashby"
+  },
+  {
+    "name": "Together AI",
+    "slug": "togetherai",
+    "ats": "greenhouse"
+  },
+  {
+    "name": "Scale AI",
+    "slug": "scaleai",
+    "ats": "greenhouse"
+  }
+]

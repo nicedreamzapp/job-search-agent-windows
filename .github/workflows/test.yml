@@ -1,0 +1,44 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests (offline, no live ATS calls)
+        # JOBSCOUT_LIVE_TESTS is deliberately unset so we don't hammer real
+        # ATS endpoints on every CI run. The unit tests mock the HTTP layer
+        # and cover every connector's parsing logic.
+        run: python -m unittest discover -v tests
+
+      - name: Sanity check the CLI (dry-run with example config)
+        run: |
+          mkdir -p "$RUNNER_TEMP/jobscout-config"
+          cp examples/companies.example.json "$RUNNER_TEMP/jobscout-config/companies.json"
+          cp examples/filters.example.yml    "$RUNNER_TEMP/jobscout-config/filters.yml"
+          cp examples/credentials.example.md "$RUNNER_TEMP/jobscout-config/credentials.md"
+          # Use a one-company subset and dry-run so CI never depends on the
+          # real ATS being reachable. The dry-run path doesn't touch the LLM.
+          JOBSCOUT_CONFIG_DIR="$RUNNER_TEMP/jobscout-config" \
+          JOBSCOUT_STATE_DIR="$RUNNER_TEMP/jobscout-state" \
+          python jobscout.py --dry-run --companies-only=anthropic --verbose || true
+        shell: bash

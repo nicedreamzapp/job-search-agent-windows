@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title desc">
+  <title id="title">job-search-agent favicon</title>
+  <desc id="desc">Square 32-pixel icon: radar sweep with chevron arrow, optimized for browser tabs.</desc>
+
+  <!-- Rounded square background -->
+  <rect x="0" y="0" width="32" height="32" rx="6" fill="#0B0F14" />
+
+  <!-- Mark, scaled to fit inside 32x32 with safe padding -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M8 23 A 6 6 0 0 1 14 17" stroke="#10B981" />
+    <path d="M8 23 A 11 11 0 0 1 19 12" stroke="#FFFFFF" opacity="0.6" />
+    <path d="M8 23 A 15 15 0 0 1 23 8" stroke="#FFFFFF" opacity="0.3" />
+    <path d="M18 14 L24 8 L24 14 M24 8 L18 8" stroke="#10B981" />
+    <circle cx="8" cy="23" r="1.6" fill="#FFFFFF" />
+  </g>
+</svg>

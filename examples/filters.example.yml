@@ -1,0 +1,51 @@
+# Filter rules for job-search-agent.
+#
+# Every list below is a list of case-insensitive regex patterns. Empty lists
+# (or omitted keys) mean "no rule of this kind." See filters.py for the
+# matching semantics — none of this is fancy, just `re.search` against
+# the named field.
+#
+# Tune these to your situation. The defaults below assume a senior IC who:
+#   - already has degree-equivalent experience, so degree-required postings
+#     are noise.
+#   - is targeting individual-contributor or senior roles, not internships
+#     or new-grad pipelines.
+#   - wants remote or US-based on-site, not strict location lock-in.
+#   - is structurally incompatible with regulated-finance environments
+#     (drop banks/CUs/financial-services). Remove these if irrelevant.
+
+# Drop the posting if the *title* matches any of these regexes.
+drop_titles_matching:
+  - "Junior"
+  - "Intern\\b"
+  - "Internship"
+  - "Entry.?Level"
+  - "New Grad"
+  - "Recruiter"            # we want roles we'd apply to, not roles that recruit
+  - "Customer Support"
+  - "Sales Development"
+
+# Drop the posting if the *description* (full JD text) matches any of these.
+# This catches roles whose title sounds senior but whose requirements aren't.
+drop_descriptions_matching:
+  - "Bachelor[’']s degree required"
+  - "Must have a Master[’']s"
+  - "PhD required"
+  - "0-2 years of experience"
+
+# Drop the posting if the *company name or slug* matches. The connector layer
+# never crawls the open internet — companies come from your allow-list — but
+# if you accidentally added one that no longer fits, you can blacklist it
+# here without editing companies.json.
+drop_companies_matching: []
+
+# Allow-list for *location*. Empty list = no location filtering. If you set
+# any patterns, a posting's `location` must match at least one of them or
+# it gets dropped.
+require_locations_in:
+  - "Remote"
+  - "United States"
+  - "U\\.S\\."
+  - "USA"
+  - "New York"
+  - "San Francisco"

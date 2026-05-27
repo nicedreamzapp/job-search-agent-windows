@@ -1,0 +1,1565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>job-search-agent — demo</title>
+<style>
+  /*
+   * 60-second marketing demo for job-search-agent.
+   * 9 scenes, each absolutely-positioned, individually faded in/out
+   * with @keyframes timed against a locked 58.9s narration track.
+   *
+   * Palette: dark mode, slate neutrals, single emerald accent.
+   * No external assets.
+   */
+
+  :root {
+    --bg:        #0b0f14;
+    --bg-2:      #0f172a;
+    --surface:   #111827;
+    --surface-2: #1e293b;
+    --surface-3: #2d333b;
+    --border:    #1f2937;
+    --border-2:  #334155;
+    --text:      #e2e8f0;
+    --text-2:    #94a3b8;
+    --text-3:    #64748b;
+    --accent:    #10b981;
+    --accent-2:  #059669;
+    --error:     #ef4444;
+    --warning:   #f59e0b;
+    --info:      #3b82f6;
+
+    --sans: ui-sans-serif, -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif;
+    --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Subtle ambient backdrop — radial vignette behind every scene */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1200px 700px at 50% 40%, rgba(16,185,129,0.06), transparent 60%),
+      radial-gradient(900px 600px at 80% 80%, rgba(59,130,246,0.04), transparent 70%),
+      linear-gradient(180deg, #0b0f14 0%, #060a10 100%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stage {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+
+  /* ============================================================
+   * SCENE TIMING (cumulative seconds, narration runs 58.9s total)
+   *  S1  0.0 –  4.0   "Job hunting is broken"
+   *  S2  4.0 – 10.0   "Runs on your laptop. Quietly. Every morning."
+   *  S3 10.0 – 14.5   "Checks fifty companies"
+   *  S4 14.5 – 20.5   "You write down what you've built"
+   *  S5 20.5 – 28.0   "Ranks every open job against the real you"
+   *  S6 28.0 – 34.0   "Throws out the obvious wastes of time"
+   *  S7 34.0 – 44.0   "Top three already have a personal pitch"
+   *  S8 44.0 – 52.0   "No data leaves. No subscription."
+   *  S9 52.0 – 60.0   "Wake up to the right roles. github.com/..."
+   * ============================================================ */
+
+  @keyframes scene-show {
+    0%   { opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Each .scene gets the same keyframe but a different duration+delay so
+     the timeline plays once.  Animations are non-iterating (forwards). */
+  #s1 { animation: scene-show 4.0s ease-in-out  0.0s 1 both; }
+  #s2 { animation: scene-show 6.0s ease-in-out  4.0s 1 both; }
+  #s3 { animation: scene-show 4.5s ease-in-out 10.0s 1 both; }
+  #s4 { animation: scene-show 6.0s ease-in-out 14.5s 1 both; }
+  #s5 { animation: scene-show 7.5s ease-in-out 20.5s 1 both; }
+  #s6 { animation: scene-show 6.0s ease-in-out 28.0s 1 both; }
+  #s7 { animation: scene-show 10.0s ease-in-out 34.0s 1 both; }
+  #s8 { animation: scene-show 8.0s ease-in-out 44.0s 1 both; }
+  #s9 { animation: scene-show 8.0s ease-in-out 52.0s 1 both; }
+
+  /* ----- Reusable mac window chrome ----- */
+  .mac-window {
+    background: linear-gradient(180deg, #1c1f26 0%, #161a21 100%);
+    border: 1px solid #2a2f3a;
+    border-radius: 14px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 30px 80px rgba(0,0,0,0.55),
+      0 8px 24px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+  .mac-titlebar {
+    height: 38px;
+    background: linear-gradient(180deg, #2a2f3a 0%, #1f2430 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 8px;
+    border-bottom: 1px solid #0e1117;
+  }
+  .traffic { display: flex; gap: 8px; }
+  .traffic span {
+    width: 12px; height: 12px; border-radius: 50%;
+    box-shadow: 0 0 0 0.5px rgba(0,0,0,0.4) inset;
+  }
+  .traffic .r { background: #ff5f57; }
+  .traffic .y { background: #febc2e; }
+  .traffic .g { background: #28c840; }
+  .mac-title {
+    flex: 1; text-align: center; font-size: 12px;
+    color: #98a2b3; letter-spacing: 0.2px;
+    font-family: var(--sans);
+  }
+  .mac-spacer { width: 52px; }
+
+  /* ================================================================
+   * SCENE 1 — Job hunting is broken (LinkedIn-style chaos)
+   * ================================================================ */
+  #s1 .browser {
+    position: absolute;
+    left: 60px; right: 60px; top: 50px; bottom: 50px;
+    background: #f3f4f6;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #1f2937;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+  }
+  #s1 .browser-bar {
+    height: 44px;
+    background: #e5e7eb;
+    border-bottom: 1px solid #d1d5db;
+    display: flex; align-items: center; padding: 0 14px; gap: 12px;
+  }
+  #s1 .browser-bar .traffic span { box-shadow: none; }
+  #s1 .urlbar {
+    flex: 1;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    height: 26px;
+    display: flex; align-items: center;
+    padding: 0 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #6b7280;
+  }
+  #s1 .urlbar::before {
+    content: "🔒";
+    margin-right: 6px; font-size: 10px;
+  }
+  #s1 .body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    height: calc(100% - 44px);
+  }
+  #s1 .sidebar {
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 16px 12px;
+    font-size: 11px; color: #4b5563;
+  }
+  #s1 .sidebar .logo {
+    font-weight: 700; font-size: 14px;
+    color: #0a66c2;
+    margin-bottom: 14px;
+  }
+  #s1 .sidebar .item {
+    padding: 6px 8px; border-radius: 6px;
+    margin-bottom: 2px;
+  }
+  #s1 .sidebar .item.active {
+    background: #eaf4fb; color: #0a66c2; font-weight: 600;
+  }
+  #s1 .feed {
+    background: #f3f4f6;
+    padding: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  #s1 .feed-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  #s1 .feed-title {
+    font-weight: 700; font-size: 13px; color: #111827;
+  }
+  #s1 .feed-meta {
+    font-size: 11px; color: #6b7280;
+  }
+  #s1 .job-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  #s1 .job {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 8px;
+    height: 76px;
+    display: flex; flex-direction: column; gap: 4px;
+    overflow: hidden;
+  }
+  #s1 .job .row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  #s1 .job .logo-sq {
+    width: 18px; height: 18px;
+    background: #cbd5e1;
+    border-radius: 3px;
+    flex: 0 0 18px;
+  }
+  #s1 .job .t {
+    font-size: 9px; font-weight: 600; color: #111827;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1;
+  }
+  #s1 .job .s {
+    font-size: 8px; color: #6b7280;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #s1 .job .apply {
+    margin-top: auto;
+    background: #0a66c2;
+    color: #fff;
+    font-size: 8px;
+    font-weight: 600;
+    text-align: center;
+    padding: 2px 0;
+    border-radius: 10px;
+  }
+  /* Red X wipe across the whole panel */
+  #s1 .x-wipe {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  #s1 .x-wipe::before, #s1 .x-wipe::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 1200px; height: 20px;
+    background: linear-gradient(90deg, transparent 0%, rgba(239,68,68,0.0) 5%, #ef4444 50%, rgba(239,68,68,0.0) 95%, transparent 100%);
+    border-radius: 10px;
+    transform-origin: center;
+    box-shadow: 0 0 30px rgba(239,68,68,0.6);
+  }
+  #s1 .x-wipe::before {
+    transform: translate(-50%,-50%) rotate(20deg) scaleX(0);
+    animation: xline 1.2s ease-out 1.6s both;
+  }
+  #s1 .x-wipe::after {
+    transform: translate(-50%,-50%) rotate(-20deg) scaleX(0);
+    animation: xline 1.2s ease-out 2.0s both;
+  }
+  @keyframes xline {
+    0%   { transform: translate(-50%,-50%) var(--rot, rotate(20deg)) scaleX(0); }
+    100% { transform: translate(-50%,-50%) var(--rot, rotate(20deg)) scaleX(1); }
+  }
+  #s1 .x-wipe::after { --rot: rotate(-20deg); }
+
+  /* ================================================================
+   * SCENE 2 — macOS terminal: "jobscout"
+   * ================================================================ */
+  #s2 .desk {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(800px 500px at 30% 30%, rgba(16,185,129,0.08), transparent 60%),
+      radial-gradient(700px 500px at 80% 80%, rgba(59,130,246,0.06), transparent 65%),
+      linear-gradient(180deg, #0a0e14 0%, #050810 100%);
+    filter: blur(0px);
+  }
+  #s2 .terminal {
+    position: absolute;
+    left: 140px; top: 90px;
+    width: 1000px; height: 540px;
+    background: rgba(20, 24, 31, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid #2a2f3a;
+    border-radius: 14px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 40px 100px rgba(0,0,0,0.6);
+    transform: translateY(40px) scale(0.96);
+    opacity: 0;
+    animation: term-in 0.8s ease-out 4.4s both;
+    overflow: hidden;
+  }
+  @keyframes term-in {
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  #s2 .term-body {
+    padding: 22px 28px;
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.7;
+    color: #cdd6f4;
+  }
+  #s2 .prompt { color: #89b4fa; }
+  #s2 .user { color: #a6e3a1; }
+  #s2 .host { color: #94e2d5; }
+  #s2 .path { color: #f9e2af; }
+  #s2 .accent { color: #10b981; }
+  #s2 .dim { color: #6c7086; }
+
+  /* Typed lines: each line wipes in from left to right */
+  #s2 .typed {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
+    animation-fill-mode: forwards;
+  }
+  #s2 .typed.l1 { animation: typewriter 1.1s steps(40, end) 5.0s forwards; max-width: 600px; }
+  #s2 .typed.l2 { animation: typewriter 0.7s steps(28, end) 6.3s forwards; max-width: 380px; }
+  #s2 .typed.l3 { animation: typewriter 0.8s steps(40, end) 7.2s forwards; max-width: 560px; }
+  #s2 .typed.l4 { animation: typewriter 0.7s steps(30, end) 8.2s forwards; max-width: 460px; }
+  #s2 .typed.l5 { animation: typewriter 0.8s steps(30, end) 9.0s forwards; max-width: 480px; }
+  @keyframes typewriter {
+    to { width: 100%; }
+  }
+  #s2 .caret {
+    display: inline-block;
+    width: 9px; height: 17px;
+    background: #cdd6f4;
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ================================================================
+   * SCENE 3 — Company grid
+   * ================================================================ */
+  #s3 .browser2 {
+    position: absolute;
+    left: 60px; right: 60px; top: 50px; bottom: 50px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  #s3 .browser-bar {
+    height: 42px;
+    background: linear-gradient(180deg, #1f2430 0%, #161a21 100%);
+    border-bottom: 1px solid #0e1117;
+    display: flex; align-items: center; padding: 0 14px; gap: 10px;
+  }
+  #s3 .urlbar {
+    flex: 1;
+    background: #0e1117;
+    border: 1px solid #2a2f3a;
+    border-radius: 6px;
+    height: 26px;
+    display: flex; align-items: center;
+    padding: 0 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #94a3b8;
+  }
+  #s3 .urlbar::before {
+    content: "🔒";
+    margin-right: 8px;
+  }
+  #s3 .body {
+    padding: 24px 32px;
+    height: calc(100% - 42px);
+    overflow: hidden;
+  }
+  #s3 .h {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  #s3 .h .title {
+    font-size: 18px; font-weight: 600; color: #e2e8f0;
+  }
+  #s3 .h .sub {
+    font-size: 12px; color: #64748b; margin-top: 2px;
+    font-family: var(--mono);
+  }
+  #s3 .chip {
+    font-size: 11px;
+    background: rgba(16,185,129,0.12);
+    color: #10b981;
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-family: var(--mono);
+  }
+  #s3 .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  #s3 .card {
+    background: linear-gradient(180deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.5) 100%);
+    border: 1px solid rgba(51,65,85,0.6);
+    border-radius: 10px;
+    padding: 14px;
+    height: 96px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateY(8px);
+    animation: card-in 0.5s ease-out forwards;
+  }
+  @keyframes card-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* Wave-in delays for 20 cards (5x4) */
+  #s3 .card:nth-child(1)  { animation-delay: 10.5s; }
+  #s3 .card:nth-child(2)  { animation-delay: 10.55s; }
+  #s3 .card:nth-child(3)  { animation-delay: 10.60s; }
+  #s3 .card:nth-child(4)  { animation-delay: 10.65s; }
+  #s3 .card:nth-child(5)  { animation-delay: 10.70s; }
+  #s3 .card:nth-child(6)  { animation-delay: 10.75s; }
+  #s3 .card:nth-child(7)  { animation-delay: 10.80s; }
+  #s3 .card:nth-child(8)  { animation-delay: 10.85s; }
+  #s3 .card:nth-child(9)  { animation-delay: 10.90s; }
+  #s3 .card:nth-child(10) { animation-delay: 10.95s; }
+  #s3 .card:nth-child(11) { animation-delay: 11.00s; }
+  #s3 .card:nth-child(12) { animation-delay: 11.05s; }
+  #s3 .card:nth-child(13) { animation-delay: 11.10s; }
+  #s3 .card:nth-child(14) { animation-delay: 11.15s; }
+  #s3 .card:nth-child(15) { animation-delay: 11.20s; }
+  #s3 .card:nth-child(16) { animation-delay: 11.25s; }
+  #s3 .card:nth-child(17) { animation-delay: 11.30s; }
+  #s3 .card:nth-child(18) { animation-delay: 11.35s; }
+  #s3 .card:nth-child(19) { animation-delay: 11.40s; }
+  #s3 .card:nth-child(20) { animation-delay: 11.45s; }
+  #s3 .card .top {
+    display: flex; align-items: center; gap: 10px;
+  }
+  #s3 .card .mono {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  #s3 .card .name {
+    font-size: 13px; font-weight: 600; color: #e2e8f0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #s3 .card .domain {
+    font-size: 10px; color: #64748b;
+    font-family: var(--mono);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #s3 .card .foot {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; color: #64748b;
+    font-family: var(--mono);
+  }
+  #s3 .card .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16,185,129,0.6);
+  }
+
+  /* ================================================================
+   * SCENE 4 — Markdown editor
+   * ================================================================ */
+  #s4 .editor {
+    position: absolute;
+    left: 140px; top: 80px;
+    width: 1000px; height: 560px;
+  }
+  #s4 .ed-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    height: calc(100% - 38px);
+  }
+  #s4 .files {
+    background: #0e1117;
+    border-right: 1px solid #1f2937;
+    padding: 14px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #94a3b8;
+  }
+  #s4 .files .folder {
+    color: #cbd5e1;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  #s4 .files .file {
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #s4 .files .file.active {
+    background: rgba(16,185,129,0.08);
+    color: #10b981;
+  }
+  #s4 .pane {
+    background: #161a21;
+    padding: 28px 36px;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.85;
+    color: #cdd6f4;
+    overflow: hidden;
+    position: relative;
+  }
+  #s4 .pane .head {
+    color: #f9e2af;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  #s4 .pane .small {
+    color: #6c7086;
+    font-size: 11px;
+    margin-bottom: 18px;
+  }
+  #s4 .pane .h2 {
+    color: #cba6f7;
+    font-weight: 700;
+    margin-top: 14px;
+  }
+  #s4 .pane .li {
+    color: #cdd6f4;
+  }
+  #s4 .pane .accent { color: #10b981; }
+  #s4 .pane .dim { color: #6c7086; }
+
+  #s4 .typed {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
+  }
+  #s4 .typed.t1 { animation: type-line 0.5s steps(20, end) 15.0s forwards; max-width: 220px; }
+  #s4 .typed.t2 { animation: type-line 1.0s steps(48, end) 15.5s forwards; max-width: 540px; }
+  #s4 .typed.t3 { animation: type-line 0.9s steps(46, end) 16.6s forwards; max-width: 520px; }
+  #s4 .typed.t4 { animation: type-line 1.0s steps(56, end) 17.6s forwards; max-width: 620px; }
+  #s4 .typed.t5 { animation: type-line 0.4s steps(8, end) 18.7s forwards; max-width: 110px; }
+  #s4 .typed.t6 { animation: type-line 1.0s steps(48, end) 19.2s forwards; max-width: 540px; }
+  @keyframes type-line { to { width: 100%; } }
+
+  #s4 .caret {
+    display: inline-block;
+    width: 8px; height: 16px;
+    background: #cdd6f4;
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: blink 1s steps(2) infinite;
+  }
+
+  /* ================================================================
+   * SCENE 5 — Ranked role cards
+   * ================================================================ */
+  #s5 .app-frame {
+    position: absolute;
+    left: 60px; right: 60px; top: 50px; bottom: 50px;
+  }
+  #s5 .app-body {
+    height: calc(100% - 42px);
+    display: grid;
+    grid-template-columns: 280px 1fr;
+  }
+  #s5 .side {
+    background: #0e1117;
+    border-right: 1px solid #1f2937;
+    padding: 22px 18px;
+  }
+  #s5 .side .brand {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 24px;
+  }
+  #s5 .side .glyph {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(16,185,129,0.4);
+  }
+  #s5 .side .glyph::after {
+    content: "";
+    width: 14px; height: 14px;
+    border: 2px solid #0b0f14;
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-right-color: transparent;
+  }
+  #s5 .side .wm {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.2px;
+    color: #e2e8f0;
+    font-family: var(--sans);
+  }
+  #s5 .side .wm span { color: #10b981; }
+  #s5 .side .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+  #s5 .side .nav-item.active {
+    background: rgba(16,185,129,0.08);
+    color: #10b981;
+  }
+  #s5 .side .nav-item .ic {
+    width: 14px; height: 14px;
+    background: currentColor;
+    opacity: 0.8;
+    border-radius: 3px;
+    flex: 0 0 14px;
+  }
+  #s5 .side .group-label {
+    font-size: 10px;
+    color: #475569;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 18px 0 6px;
+    padding: 0 10px;
+  }
+  #s5 .main {
+    padding: 22px 28px;
+    overflow: hidden;
+  }
+  #s5 .main .head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  #s5 .main .h-l .t {
+    font-size: 20px; font-weight: 600; color: #e2e8f0;
+  }
+  #s5 .main .h-l .s {
+    font-size: 12px; color: #64748b; font-family: var(--mono);
+    margin-top: 2px;
+  }
+  #s5 .main .h-r {
+    display: flex; gap: 8px;
+  }
+  #s5 .pill {
+    font-size: 11px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--mono);
+  }
+  #s5 .pill.green {
+    background: rgba(16,185,129,0.12);
+    border-color: rgba(16,185,129,0.4);
+    color: #10b981;
+  }
+  #s5 .role-list {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #s5 .role {
+    background: linear-gradient(180deg, rgba(30,41,59,0.55) 0%, rgba(15,23,42,0.55) 100%);
+    border: 1px solid rgba(51,65,85,0.7);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateX(40px);
+    animation: slide-in 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  }
+  @keyframes slide-in {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  #s5 .role:nth-child(1) { animation-delay: 21.4s; }
+  #s5 .role:nth-child(2) { animation-delay: 21.7s; }
+  #s5 .role:nth-child(3) { animation-delay: 22.0s; }
+  #s5 .role:nth-child(4) { animation-delay: 22.3s; }
+  #s5 .role:nth-child(5) { animation-delay: 22.6s; }
+  #s5 .role .mono {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 13px;
+  }
+  #s5 .role .middle .row1 {
+    font-size: 14px; font-weight: 600; color: #e2e8f0;
+  }
+  #s5 .role .middle .row1 .co {
+    color: #94a3b8; font-weight: 500;
+  }
+  #s5 .role .middle .row2 {
+    font-size: 12px; color: #64748b;
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+  #s5 .role .score {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--mono);
+    background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.12));
+    color: #10b981;
+    border: 1px solid rgba(16,185,129,0.5);
+    border-radius: 999px;
+    padding: 6px 14px;
+    min-width: 56px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(16,185,129,0.18);
+  }
+
+  /* ================================================================
+   * SCENE 6 — Filtering out junk
+   * ================================================================ */
+  #s6 .panel {
+    position: absolute;
+    left: 80px; right: 80px; top: 80px; bottom: 80px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  #s6 .filters {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  #s6 .filters .label {
+    font-size: 12px; color: #64748b; letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    margin-bottom: 6px;
+  }
+  #s6 .chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.45);
+    color: #fca5a5;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    width: max-content;
+    opacity: 1;
+    animation-fill-mode: forwards;
+  }
+  #s6 .chip .x {
+    font-weight: 700;
+    color: #ef4444;
+    background: rgba(239,68,68,0.18);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  #s6 .c1 { animation: chip-fly 0.7s ease-in 29.0s forwards; }
+  #s6 .c2 { animation: chip-fly 0.7s ease-in 29.6s forwards; }
+  #s6 .c3 { animation: chip-fly 0.7s ease-in 30.2s forwards; }
+  #s6 .c4 { animation: chip-fly 0.7s ease-in 30.8s forwards; }
+  @keyframes chip-fly {
+    0%   { transform: translateX(0) rotate(0); opacity: 1; }
+    100% { transform: translateX(-400px) rotate(-8deg); opacity: 0; }
+  }
+  #s6 .counter {
+    text-align: center;
+    background: linear-gradient(180deg, rgba(30,41,59,0.55), rgba(15,23,42,0.55));
+    border: 1px solid #334155;
+    border-radius: 18px;
+    padding: 40px 30px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  #s6 .counter .top-lbl {
+    font-size: 11px; color: #64748b;
+    letter-spacing: 2px; text-transform: uppercase;
+    font-family: var(--mono);
+    margin-bottom: 10px;
+  }
+  #s6 .counter .num {
+    font-size: 92px;
+    font-weight: 700;
+    font-family: var(--mono);
+    color: #10b981;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(16,185,129,0.4);
+  }
+  #s6 .counter .num .strike {
+    font-size: 22px;
+    color: #475569;
+    text-decoration: line-through;
+    display: block;
+    margin-bottom: 8px;
+    text-shadow: none;
+  }
+  #s6 .counter .lbl {
+    font-size: 13px; color: #94a3b8;
+    margin-top: 14px;
+    font-family: var(--mono);
+  }
+  #s6 .counter .num span.live {
+    display: inline-block;
+    min-width: 180px;
+  }
+
+  /* ================================================================
+   * SCENE 7 — Personal pitch / match card
+   * ================================================================ */
+  #s7 .pitch {
+    position: absolute;
+    left: 200px; top: 60px;
+    width: 880px; height: 600px;
+    transform: scale(0.92);
+    opacity: 0;
+    animation: pitch-in 0.7s ease-out 34.4s forwards;
+  }
+  @keyframes pitch-in {
+    to { transform: scale(1); opacity: 1; }
+  }
+  #s7 .pitch-body {
+    padding: 32px 40px;
+    height: calc(100% - 38px);
+    display: flex; flex-direction: column;
+  }
+  #s7 .top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  #s7 .role-meta .co {
+    font-size: 13px;
+    color: #94a3b8;
+    font-family: var(--mono);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  #s7 .role-meta .title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.4px;
+    line-height: 1.2;
+  }
+  #s7 .role-meta .loc {
+    font-size: 13px;
+    color: #64748b;
+    font-family: var(--mono);
+    margin-top: 8px;
+  }
+  #s7 .score-big {
+    background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.15));
+    border: 1px solid rgba(16,185,129,0.6);
+    color: #10b981;
+    border-radius: 14px;
+    padding: 12px 18px;
+    text-align: center;
+    box-shadow: 0 0 24px rgba(16,185,129,0.25);
+  }
+  #s7 .score-big .num {
+    font-size: 36px; font-weight: 700;
+    font-family: var(--mono);
+    line-height: 1;
+  }
+  #s7 .score-big .lbl {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    color: #34d399;
+  }
+  #s7 .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #334155, transparent);
+    margin: 24px 0;
+  }
+  #s7 .pitch-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 14px;
+    font-family: var(--mono);
+    display: flex; align-items: center; gap: 8px;
+  }
+  #s7 .pitch-label::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+  }
+  #s7 .pitch-text {
+    font-size: 17px;
+    line-height: 1.65;
+    color: #cbd5e1;
+    font-family: var(--sans);
+    flex: 1;
+  }
+  #s7 .pitch-text p {
+    margin: 0 0 10px 0;
+    overflow: hidden;
+    white-space: normal;
+  }
+  #s7 .pitch-text .ln {
+    display: block;
+    opacity: 0;
+    transform: translateY(6px);
+    animation: line-up 0.5s ease-out forwards;
+  }
+  @keyframes line-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #s7 .pitch-text .ln:nth-child(1) { animation-delay: 35.6s; }
+  #s7 .pitch-text .ln:nth-child(2) { animation-delay: 36.4s; }
+  #s7 .pitch-text .ln:nth-child(3) { animation-delay: 37.2s; }
+  #s7 .pitch-text .ln:nth-child(4) { animation-delay: 38.0s; }
+  #s7 .pitch-text .ln:nth-child(5) { animation-delay: 38.8s; }
+  #s7 .pitch-text em { color: #10b981; font-style: normal; font-weight: 600; }
+  #s7 .ctas {
+    display: flex; gap: 12px;
+    margin-top: 22px;
+    opacity: 0;
+    animation: fade-in 0.6s ease-out 40.2s forwards;
+  }
+  @keyframes fade-in { to { opacity: 1; } }
+  #s7 .btn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--sans);
+    display: flex; align-items: center; gap: 8px;
+  }
+  #s7 .btn.primary {
+    background: linear-gradient(180deg, #10b981, #059669);
+    color: #0b0f14;
+    box-shadow: 0 8px 24px rgba(16,185,129,0.35);
+  }
+  #s7 .btn.ghost {
+    background: rgba(255,255,255,0.04);
+    color: #cbd5e1;
+    border: 1px solid #334155;
+  }
+
+  /* ================================================================
+   * SCENE 8 — Trust row
+   * ================================================================ */
+  #s8 .trust {
+    position: absolute;
+    left: 80px; right: 80px; top: 180px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  #s8 .badge {
+    background: linear-gradient(180deg, rgba(30,41,59,0.6), rgba(15,23,42,0.6));
+    border: 1px solid rgba(51,65,85,0.7);
+    border-radius: 20px;
+    padding: 36px 28px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: badge-in 0.7s ease-out forwards;
+  }
+  @keyframes badge-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #s8 .badge:nth-child(1) { animation-delay: 44.6s; }
+  #s8 .badge:nth-child(2) { animation-delay: 44.9s; }
+  #s8 .badge:nth-child(3) { animation-delay: 45.2s; }
+  #s8 .icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.08));
+    border: 1px solid rgba(16,185,129,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    color: #10b981;
+    box-shadow: 0 0 24px rgba(16,185,129,0.25);
+    animation: pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 24px rgba(16,185,129,0.25); }
+    50%      { box-shadow: 0 0 36px rgba(16,185,129,0.45); }
+  }
+  #s8 .badge .label {
+    font-size: 22px; font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  #s8 .badge .sub {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+  #s8 .headline {
+    position: absolute;
+    left: 0; right: 0; top: 80px;
+    text-align: center;
+  }
+  #s8 .headline .eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #10b981;
+    margin-bottom: 10px;
+    font-family: var(--mono);
+  }
+  #s8 .headline .h {
+    font-size: 32px;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.5px;
+  }
+
+  /* ================================================================
+   * SCENE 9 — Hero / wordmark
+   * ================================================================ */
+  #s9 .hero {
+    position: absolute;
+    inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  #s9 .logo-wrap {
+    display: flex; align-items: center; gap: 22px;
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: hero-up 0.9s ease-out 52.4s forwards;
+  }
+  @keyframes hero-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #s9 .radar {
+    width: 96px; height: 96px;
+    position: relative;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%);
+    box-shadow: 0 0 60px rgba(16,185,129,0.4);
+  }
+  #s9 .radar::before {
+    content: "";
+    position: absolute; inset: 12px;
+    border: 2px solid rgba(16,185,129,0.6);
+    border-radius: 50%;
+  }
+  #s9 .radar::after {
+    content: "";
+    position: absolute; left: 50%; top: 50%;
+    width: 8px; height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 0 20px #10b981;
+  }
+  #s9 .sweep {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  #s9 .sweep::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 50%; height: 2px;
+    background: linear-gradient(90deg, #10b981, transparent);
+    transform-origin: left center;
+    animation: sweep 2.4s linear infinite;
+  }
+  @keyframes sweep {
+    to { transform: rotate(360deg); }
+  }
+  #s9 .wm {
+    font-size: 60px;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -1.5px;
+    font-family: var(--sans);
+  }
+  #s9 .wm em {
+    color: #10b981;
+    font-style: normal;
+  }
+  #s9 .tag {
+    font-size: 22px;
+    color: #94a3b8;
+    margin-bottom: 40px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+    opacity: 0;
+    animation: fade-in2 0.8s ease-out 53.0s forwards;
+  }
+  @keyframes fade-in2 { to { opacity: 1; } }
+  #s9 .ghpill {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    font-family: var(--mono);
+    font-size: 16px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 12px;
+    opacity: 0;
+    animation: fade-in2 0.8s ease-out 53.6s forwards;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+  #s9 .ghpill::before {
+    content: "★";
+    color: #f9e2af;
+    font-size: 16px;
+  }
+  #s9 .glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.18), transparent 60%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: -1;
+    animation: glow-pulse 4s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 1; }
+  }
+
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ====================================================
+       SCENE 1 — Job hunting is broken
+       ==================================================== -->
+  <div class="scene" id="s1">
+    <div class="browser">
+      <div class="browser-bar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="urlbar">jobs.example.com/search?q=engineer</div>
+      </div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="logo">in</div>
+          <div class="item active">My Jobs</div>
+          <div class="item">Saved</div>
+          <div class="item">Applied (104)</div>
+          <div class="item">Network</div>
+          <div class="item">Messages</div>
+          <div class="item">Notifications</div>
+          <div class="item">Insights</div>
+          <div class="item">Posted Jobs</div>
+        </div>
+        <div class="feed">
+          <div class="feed-head">
+            <div class="feed-title">12,847 results · sorted by relevance</div>
+            <div class="feed-meta">Updated 2 minutes ago</div>
+          </div>
+          <div class="job-grid" id="s1grid"></div>
+          <div class="x-wipe"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 2 — macOS terminal
+       ==================================================== -->
+  <div class="scene" id="s2">
+    <div class="desk"></div>
+    <div class="terminal mac-window">
+      <div class="mac-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="mac-title">~ — jobscout — 100×30</div>
+        <div class="mac-spacer"></div>
+      </div>
+      <div class="term-body">
+        <span class="typed l1"><span class="user">you</span><span class="dim">@</span><span class="host">laptop</span> <span class="path">~</span> <span class="prompt">$</span> jobscout</span>
+        <span class="typed l2"><span class="dim">→</span> Loading <span class="accent">profile.md</span>…</span>
+        <span class="typed l3"><span class="dim">→</span> Checking <span class="accent">50 companies</span> for new roles…</span>
+        <span class="typed l4"><span class="dim">→</span> Scoring matches with local model</span>
+        <span class="typed l5"><span class="accent">✓</span> Done. 3 strong matches today.<span class="caret"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 3 — Company grid
+       ==================================================== -->
+  <div class="scene" id="s3">
+    <div class="browser2 mac-window">
+      <div class="browser-bar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="urlbar">localhost:3000 — jobscout dashboard</div>
+      </div>
+      <div class="body">
+        <div class="h">
+          <div>
+            <div class="title">Companies you actually want to work at</div>
+            <div class="sub">50 watched · checked every morning · 0 spam</div>
+          </div>
+          <div class="chip">● live</div>
+        </div>
+        <div class="grid" id="s3grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 4 — Markdown editor
+       ==================================================== -->
+  <div class="scene" id="s4">
+    <div class="editor mac-window">
+      <div class="mac-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="mac-title">profile.md — job-search-agent</div>
+        <div class="mac-spacer"></div>
+      </div>
+      <div class="ed-body">
+        <div class="files">
+          <div class="folder">job-search-agent</div>
+          <div class="file">▾ companies/</div>
+          <div class="file" style="padding-left: 22px;">  list.yaml</div>
+          <div class="file">▾ profile/</div>
+          <div class="file active" style="padding-left: 22px;">  profile.md</div>
+          <div class="file">  filters.py</div>
+          <div class="file">  scorer.py</div>
+          <div class="file">  jobscout.py</div>
+        </div>
+        <div class="pane">
+          <div class="head"># Profile</div>
+          <div class="small">What you've built, what you care about, the work you want to do next.</div>
+
+          <span class="typed t1"><span class="h2">## My projects</span></span>
+          <span class="typed t2"><span class="dim">-</span> Built a <span class="accent">1kW autonomous robot</span> from scratch</span>
+          <span class="typed t3"><span class="dim">-</span> Shipped an iOS app to the App Store</span>
+          <span class="typed t4"><span class="dim">-</span> Trained an ML classifier on <span class="accent">504k cells</span></span>
+          <span class="typed t5"><span class="h2">## Skills</span></span>
+          <span class="typed t6"><span class="dim">-</span> Python, Rust, Swift, embedded firmware, ML<span class="caret"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 5 — Ranked roles
+       ==================================================== -->
+  <div class="scene" id="s5">
+    <div class="app-frame mac-window">
+      <div class="mac-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="mac-title">jobscout — matches</div>
+        <div class="mac-spacer"></div>
+      </div>
+      <div class="app-body">
+        <div class="side">
+          <div class="brand">
+            <div class="glyph"></div>
+            <div class="wm">job-<span>search</span>-agent</div>
+          </div>
+          <div class="group-label">Today</div>
+          <div class="nav-item active"><div class="ic"></div>Matches <span style="margin-left:auto;color:#10b981;">47</span></div>
+          <div class="nav-item"><div class="ic"></div>Applied</div>
+          <div class="nav-item"><div class="ic"></div>Skipped</div>
+          <div class="group-label">Settings</div>
+          <div class="nav-item"><div class="ic"></div>Profile</div>
+          <div class="nav-item"><div class="ic"></div>Companies</div>
+          <div class="nav-item"><div class="ic"></div>Filters</div>
+        </div>
+        <div class="main">
+          <div class="head">
+            <div class="h-l">
+              <div class="t">Ranked against your profile</div>
+              <div class="s">47 roles · sorted by match score · pulled this morning</div>
+            </div>
+            <div class="h-r">
+              <div class="pill green">● Local model</div>
+              <div class="pill">⌘ K</div>
+            </div>
+          </div>
+          <div class="role-list" id="s5list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 6 — Filtering
+       ==================================================== -->
+  <div class="scene" id="s6">
+    <div class="panel">
+      <div class="filters">
+        <div class="label">Filtering out the noise</div>
+        <div class="chip c1"><span class="x">✕</span> Bachelor's degree required</div>
+        <div class="chip c2"><span class="x">✕</span> Wrong city · on-site only</div>
+        <div class="chip c3"><span class="x">✕</span> Junior · 0–2 years</div>
+        <div class="chip c4"><span class="x">✕</span> Already applied · 14 days ago</div>
+      </div>
+      <div class="counter">
+        <div class="top-lbl">Roles remaining</div>
+        <div class="num">
+          <span class="strike">6,000</span>
+          <span class="live" id="s6count">6,000</span>
+        </div>
+        <div class="lbl">after your filters</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 7 — Personal pitch / match card
+       ==================================================== -->
+  <div class="scene" id="s7">
+    <div class="pitch mac-window">
+      <div class="mac-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="mac-title">Match #1 — Senior Software Engineer · Anthropic</div>
+        <div class="mac-spacer"></div>
+      </div>
+      <div class="pitch-body">
+        <div class="top">
+          <div class="role-meta">
+            <div class="co">ANTHROPIC · CAREERS</div>
+            <div class="title">Senior Software Engineer, Agents</div>
+            <div class="loc">Remote · USA · Full-time</div>
+          </div>
+          <div class="score-big">
+            <div class="num">94</div>
+            <div class="lbl">match</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="pitch-label">Personal pitch · drafted locally</div>
+        <div class="pitch-text">
+          <span class="ln">Hi — I noticed the <em>Agents team</em> is hiring, and the work lines up almost exactly with what I've been building on my own time.</span>
+          <span class="ln">I've shipped an <em>autonomous robotics platform</em>, an iOS app on the App Store, and an ML classifier trained on half a million cells.</span>
+          <span class="ln">My day job is taking ambiguous problems, scoping them down to a working prototype, and shipping it to real users.</span>
+          <span class="ln">I would love to bring that to a team that takes <em>agent reliability</em> as seriously as you do.</span>
+          <span class="ln">Resume attached. Happy to hop on a call whenever works for you.</span>
+        </div>
+        <div class="ctas">
+          <div class="btn primary">Send application →</div>
+          <div class="btn ghost">Edit pitch</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 8 — Trust row
+       ==================================================== -->
+  <div class="scene" id="s8">
+    <div class="headline">
+      <div class="eyebrow">Built for you, not your data</div>
+      <div class="h">Stays on your machine. Forever.</div>
+    </div>
+    <div class="trust">
+      <div class="badge">
+        <div class="icon">🔒</div>
+        <div class="label">100% Local</div>
+        <div class="sub">No data ever leaves your laptop.<br/>Not your resume. Not your filters.</div>
+      </div>
+      <div class="badge">
+        <div class="icon">$0</div>
+        <div class="label">No subscription</div>
+        <div class="sub">Open source. MIT licensed.<br/>Free, forever.</div>
+      </div>
+      <div class="badge">
+        <div class="icon">✋</div>
+        <div class="label">You stay in control</div>
+        <div class="sub">No spray-applying. You decide<br/>what gets sent, and when.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       SCENE 9 — Hero / wordmark
+       ==================================================== -->
+  <div class="scene" id="s9">
+    <div class="hero">
+      <div class="glow"></div>
+      <div class="logo-wrap">
+        <div class="radar">
+          <div class="sweep"></div>
+        </div>
+        <div class="wm">job-<em>search</em>-agent</div>
+      </div>
+      <div class="tag">Wake up to the right roles. Not the loudest ones.</div>
+      <div class="ghpill">github.com/job-search-agent</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // -------------------------------------------------------
+  // Scene 1 — generate 50 fake LinkedIn job tiles
+  // -------------------------------------------------------
+  (function() {
+    const grid = document.getElementById("s1grid");
+    if (!grid) return;
+    const titles = [
+      "Sr. Backend Engineer","Staff PM","Growth Marketer","Customer Success",
+      "Site Reliability","Data Engineer","UX Designer","Full Stack Dev",
+      "Mobile Engineer","Sales Development","Engineering Manager","Recruiter",
+      "ML Researcher","Cloud Architect","DevOps Lead","Product Marketing",
+      "Operations Analyst","Solutions Engineer","Tech Writer","Brand Designer",
+      "iOS Engineer","Android Lead","QA Automation","Security Engineer",
+      "Junior Developer","Senior Frontend","Platform Engineer","Director of Eng",
+      "Bus. Dev. Rep","Field Engineer","Game Developer","Database Admin",
+      "Support Lead","Implementation","Marketing Manager","Talent Partner",
+      "Account Executive","Lifecycle Manager","Content Strategist","Researcher",
+      "Embedded Engineer","Hardware EE","Firmware Lead","Robotics Eng",
+      "Data Scientist","Analyst II","Founding Engineer","CTO","COO","CFO"
+    ];
+    const companies = ["TechCorp","DataFlow","CloudOS","Synap","Pixelate","Nexa","Forge","Orbit","Mercury","Hyper","Linear","Quanta","Helix","Beacon","Lumin","Apex","Vector","Drift","Echo","Kite"];
+    for (let i = 0; i < 35; i++) {
+      const t = titles[i % titles.length];
+      const c = companies[i % companies.length];
+      const cell = document.createElement("div");
+      cell.className = "job";
+      cell.innerHTML = `
+        <div class="row">
+          <div class="logo-sq"></div>
+          <div class="t">${t}</div>
+        </div>
+        <div class="s">${c} · ${["San Francisco","Remote","New York","Austin","Seattle"][i%5]}</div>
+        <div class="apply">Easy Apply</div>
+      `;
+      grid.appendChild(cell);
+    }
+  })();
+
+  // -------------------------------------------------------
+  // Scene 3 — 20 polished company cards
+  // -------------------------------------------------------
+  (function() {
+    const grid = document.getElementById("s3grid");
+    if (!grid) return;
+    const cos = [
+      ["Anthropic","careers.anthropic.com","An","#d97706"],
+      ["Stripe","stripe.com/jobs","St","#635bff"],
+      ["Linear","linear.app","Li","#5e6ad2"],
+      ["Vercel","vercel.com","Ve","#0f172a"],
+      ["Figma","figma.com","Fi","#a259ff"],
+      ["Modal","modal.com","Mo","#7c3aed"],
+      ["Notion","notion.so","No","#000000"],
+      ["Replit","replit.com","Re","#f97316"],
+      ["Mistral","mistral.ai","Mi","#fb923c"],
+      ["Hugging Face","huggingface.co","HF","#facc15"],
+      ["Cursor","cursor.sh","Cu","#22d3ee"],
+      ["Supabase","supabase.com","Su","#22c55e"],
+      ["Cloudflare","cloudflare.com","Cf","#f38020"],
+      ["Datadog","datadoghq.com","Dd","#632ca6"],
+      ["Discord","discord.com","Ds","#5865f2"],
+      ["GitHub","github.com","Gh","#24292f"],
+      ["Asana","asana.com","As","#f06a6a"],
+      ["Plaid","plaid.com","Pl","#0a85ea"],
+      ["Ramp","ramp.com","Ra","#15803d"],
+      ["Mercury","mercury.com","Mc","#0ea5e9"]
+    ];
+    cos.forEach(([name, domain, mono, color]) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="top">
+          <div class="mono" style="background: ${color};">${mono}</div>
+          <div>
+            <div class="name">${name}</div>
+            <div class="domain">${domain}</div>
+          </div>
+        </div>
+        <div class="foot">
+          <div class="dot"></div>
+          <span>checked · 8h ago</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  })();
+
+  // -------------------------------------------------------
+  // Scene 5 — 5 ranked role cards
+  // -------------------------------------------------------
+  (function() {
+    const list = document.getElementById("s5list");
+    if (!list) return;
+    const roles = [
+      ["Anthropic","An","#d97706","Senior Software Engineer, Agents","Remote · USA · Full-time", 94],
+      ["Modal","Mo","#7c3aed","Founding Engineer · Inference","SF / Remote · Series B", 89],
+      ["Linear","Li","#5e6ad2","Staff Engineer · Workflows","Remote · EU / US", 86],
+      ["Cursor","Cu","#22d3ee","Engineer · Agentic Editing","SF · Hybrid", 83],
+      ["Vercel","Ve","#0f172a","Senior Engineer · Edge","Remote · Global", 79],
+    ];
+    roles.forEach(([co, mono, color, title, meta, score]) => {
+      const r = document.createElement("div");
+      r.className = "role";
+      r.innerHTML = `
+        <div class="mono" style="background:${color}">${mono}</div>
+        <div class="middle">
+          <div class="row1">${title} · <span class="co">${co}</span></div>
+          <div class="row2">${meta}</div>
+        </div>
+        <div class="score">${score}</div>
+      `;
+      list.appendChild(r);
+    });
+  })();
+
+  // -------------------------------------------------------
+  // Scene 6 — counter ticking from 6000 → 47 between 30.0s and 32.5s
+  // -------------------------------------------------------
+  (function() {
+    const el = document.getElementById("s6count");
+    if (!el) return;
+    const start = 6000;
+    const end = 47;
+    const fireAt = 30.0 * 1000;  // ms from page load
+    const duration = 2500;       // ms
+
+    function tween(t0) {
+      const startTime = performance.now();
+      function frame(now) {
+        const k = Math.min(1, (now - startTime) / duration);
+        // easeOutCubic
+        const e = 1 - Math.pow(1 - k, 3);
+        const v = Math.round(start + (end - start) * e);
+        el.textContent = v.toLocaleString();
+        if (k < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+    setTimeout(tween, fireAt);
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up your job-search-agent</title>
+<style>
+  /* All offline. System-ui stack — no external font calls, no CDNs. */
+  :root {
+    --bg: #0f1115;
+    --panel: #161922;
+    --panel-2: #1c2030;
+    --border: #2a2f42;
+    --text: #f1f3f8;
+    --muted: #9aa3b8;
+    --accent: #4cc38a;
+    --accent-2: #6fb4ff;
+    --danger: #f08c8c;
+    --shadow: 0 8px 24px rgba(0,0,0,.28);
+    --radius: 10px;
+    --maxw: 720px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --panel-2: #f0f2f8;
+      --border: #d8dceb;
+      --text: #1a1d29;
+      --muted: #555b73;
+      --accent: #1d8a55;
+      --accent-2: #1a66c2;
+      --danger: #b62a2a;
+      --shadow: 0 6px 18px rgba(20,24,40,.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+  header.banner {
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  header.banner h1 {
+    font-size: 24px;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  header.banner p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .progress {
+    display: flex;
+    gap: 6px;
+    margin: 18px 0 24px;
+  }
+  .progress .tick {
+    flex: 1;
+    height: 6px;
+    border-radius: 4px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+  }
+  .progress .tick.done {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .progress .tick.current {
+    background: var(--accent-2);
+    border-color: var(--accent-2);
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .step-title {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .step h2 {
+    margin: 0 0 16px;
+    font-size: 20px;
+  }
+  label {
+    display: block;
+    margin: 18px 0 6px;
+    font-weight: 600;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 8px;
+  }
+  .example {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 8px;
+    font-style: italic;
+  }
+  input[type=text],
+  input[type=email],
+  input[type=tel],
+  input[type=url],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 16px;
+    resize: vertical;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 0;
+    border-color: var(--accent-2);
+  }
+  textarea {
+    min-height: 88px;
+  }
+  textarea.tall {
+    min-height: 140px;
+  }
+  fieldset {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 12px 0;
+  }
+  legend {
+    padding: 0 6px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .radios {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .radios label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-top: 12px;
+  }
+  .row textarea { flex: 1; }
+  .repeatable {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .repeat-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .repeat-row textarea { flex: 1; }
+  button {
+    background: var(--accent);
+    color: #0a0f0a;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  @media (prefers-color-scheme: light) {
+    button { color: #ffffff; }
+  }
+  button.secondary {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  button.tiny {
+    padding: 4px 10px;
+    font-size: 13px;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  button.danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--border);
+  }
+  button:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .actions .right {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .review {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    max-height: 420px;
+    overflow: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .status {
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 12px;
+    min-height: 22px;
+  }
+  .status.error { color: var(--danger); }
+  .error-msg {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 4px;
+    min-height: 18px;
+  }
+  details {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  details summary {
+    cursor: pointer;
+    color: var(--accent-2);
+  }
+  /* Phone */
+  @media (max-width: 520px) {
+    main { padding: 14px 12px 60px; }
+    .card { padding: 16px; }
+    header.banner h1 { font-size: 20px; }
+    .row { flex-direction: column; }
+    button { width: 100%; }
+    .actions { flex-direction: column; }
+    .actions .right { width: 100%; margin-left: 0; flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="banner">
+    <h1>Set up your job-search-agent</h1>
+    <p>Plain-English questions about your work and what you want next. Takes about 5–10 minutes. Your answers stay on this machine.</p>
+  </header>
+
+  <div class="progress" role="progressbar" aria-label="Wizard progress" aria-valuemin="1" aria-valuemax="6" id="progressBar">
+    <div class="tick current" data-step="1"></div>
+    <div class="tick" data-step="2"></div>
+    <div class="tick" data-step="3"></div>
+    <div class="tick" data-step="4"></div>
+    <div class="tick" data-step="5"></div>
+    <div class="tick" data-step="6"></div>
+  </div>
+
+  <section class="card step" id="step-1" aria-labelledby="step-1-title">
+    <div class="step-title">Step 1 of 6</div>
+    <h2 id="step-1-title">The basics</h2>
+
+    <label for="name">What's your full name? <span aria-hidden="true">*</span></label>
+    <p class="example">example: Alex Rivera</p>
+    <input type="text" id="name" autocomplete="name" required aria-required="true">
+    <div class="error-msg" id="err-name"></div>
+
+    <label for="city">What city are you in?</label>
+    <p class="hint">We'll highlight roles in the same city. Free text — neighborhoods are fine.</p>
+    <p class="example">example: Boise, Idaho</p>
+    <input type="text" id="city" autocomplete="address-level2">
+
+    <fieldset>
+      <legend>Are you open to moving for the right job?</legend>
+      <div class="radios" role="radiogroup" aria-label="Open to relocating?">
+        <label><input type="radio" name="relocate" value="yes"> Yes</label>
+        <label><input type="radio" name="relocate" value="no"> No</label>
+        <label><input type="radio" name="relocate" value="maybe"> Maybe</label>
+      </div>
+      <div id="relocateCitiesWrap" style="display:none; margin-top:10px;">
+        <label for="relocateCities">Which cities are on the table?</label>
+        <p class="example">example: San Francisco, Boston, NYC</p>
+        <input type="text" id="relocateCities" autocomplete="off">
+      </div>
+    </fieldset>
+
+    <label for="email">Email recruiters can reach you at <span aria-hidden="true">*</span></label>
+    <p class="example">example: alex.rivera@gmail.com</p>
+    <input type="email" id="email" autocomplete="email" required aria-required="true">
+    <div class="error-msg" id="err-email"></div>
+
+    <label for="phone">Phone (optional)</label>
+    <p class="example">example: (208) 555-0134</p>
+    <input type="tel" id="phone" autocomplete="tel">
+
+    <label for="linkedin">LinkedIn URL (optional)</label>
+    <p class="example">example: https://www.linkedin.com/in/alexrivera</p>
+    <input type="url" id="linkedin" inputmode="url" autocomplete="url">
+
+    <label for="web">GitHub URL or personal website (optional)</label>
+    <p class="example">example: https://alexrivera.com</p>
+    <input type="url" id="web" inputmode="url">
+
+    <div class="actions">
+      <span></span>
+      <div class="right">
+        <button type="button" id="next-1">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card step" id="step-2" aria-labelledby="step-2-title" hidden>
+    <div class="step-title">Step 2 of 6</div>
+    <h2 id="step-2-title">Your story in one paragraph</h2>
+    <p class="hint">
+      Imagine you're meeting a hiring manager at a coffee shop. They ask
+      "so what do you do?" What's your answer? Don't think too hard — write
+      it like you'd actually say it. Aim for 3–5 sentences.
+    </p>
+
+    <label for="story">Your one-paragraph answer <span aria-hidden="true">*</span></label>
+    <p class="example">
+      example: "I've spent 12 years running a small bakery — I do everything from
+      sourcing flour to training new hires. Lately I've been teaching myself bookkeeping
+      software because my accountant keeps fixing my mess. I'm looking for something that
+      lets me use the people-skills and the spreadsheet-skills at the same time."
+    </p>
+    <textarea id="story" class="tall" required aria-required="true"></textarea>
+    <div class="error-msg" id="err-story"></div>
+
+    <div class="actions">
+      <button type="button" class="secondary" data-back="2">Back</button>
+      <div class="right">
+        <button type="button" id="next-2">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card step" id="step-3" aria-labelledby="step-3-title" hidden>
+    <div class="step-title">Step 3 of 6</div>
+    <h2 id="step-3-title">Your work</h2>
+
+    <label>Tell me about things you've worked on or built <span aria-hidden="true">*</span></label>
+    <p class="hint">
+      Each entry can be a job, a side project, a volunteer thing, a class
+      you taught — anything. Just tell me what it was and what you actually
+      did. Click "Add another" to keep going.
+    </p>
+    <p class="example">
+      example: "Ran the front of house at Romano's Italian for 6 years.
+      Managed 12 servers, did weekly schedules, trained every new hire."
+    </p>
+    <div class="repeatable" id="workEntries"></div>
+    <button type="button" class="tiny" id="addWork">+ Add another</button>
+    <div class="error-msg" id="err-work"></div>
+
+    <label style="margin-top:24px;">Anything you've shipped or made? (optional)</label>
+    <p class="hint">
+      Apps, websites, products, photos, articles, art, classes you taught,
+      problems you fixed.
+    </p>
+    <p class="example">
+      example: "Built and ran a small Etsy shop selling hand-poured candles — 240 orders in year one."
+    </p>
+    <div class="repeatable" id="shippedEntries"></div>
+    <button type="button" class="tiny" id="addShipped">+ Add another</button>
+
+    <label for="numbers" style="margin-top:24px;">Numbers worth knowing? (optional)</label>
+    <p class="hint">
+      Did anything you did have a number attached? (Customers served, hours
+      saved, money saved, kids tutored, plates served, anything.)
+    </p>
+    <p class="example">
+      example: "Trained 40+ new hires over 6 years. Cut weekly inventory time from 6 hours to 90 minutes."
+    </p>
+    <textarea id="numbers"></textarea>
+
+    <div class="actions">
+      <button type="button" class="secondary" data-back="3">Back</button>
+      <div class="right">
+        <button type="button" id="next-3">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card step" id="step-4" aria-labelledby="step-4-title" hidden>
+    <div class="step-title">Step 4 of 6</div>
+    <h2 id="step-4-title">Skills</h2>
+
+    <label for="skills">What do you know how to do? <span aria-hidden="true">*</span></label>
+    <p class="hint">
+      Don't list tech stacks unless you actually use them. Write it like a
+      friend asked.
+    </p>
+    <p class="example">
+      example: "I'm good with people — calming an upset customer is my native
+      skill. I can read a P&amp;L. I'm a fast learner on any software you put
+      in front of me."
+    </p>
+    <textarea id="skills" class="tall" required aria-required="true"></textarea>
+    <div class="error-msg" id="err-skills"></div>
+
+    <label for="tools">Software, tools, or equipment you've actually used at work (optional)</label>
+    <p class="example">example: Excel, QuickBooks, Square POS, Canva, Mailchimp, a Mac.</p>
+    <textarea id="tools"></textarea>
+
+    <label for="superpowers">Underrated superpowers? (optional)</label>
+    <p class="hint">
+      Anything you wouldn't list on a resume but is actually a superpower —
+      working at 4am, never missing a deadline, picking up new tools fast,
+      fluent in customer-talk.
+    </p>
+    <p class="example">
+      example: "I never miss a deadline. I can read a room before I say anything.
+      I genuinely like writing — internal memos at my last job got passed around."
+    </p>
+    <textarea id="superpowers"></textarea>
+
+    <div class="actions">
+      <button type="button" class="secondary" data-back="4">Back</button>
+      <div class="right">
+        <button type="button" id="next-4">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card step" id="step-5" aria-labelledby="step-5-title" hidden>
+    <div class="step-title">Step 5 of 6</div>
+    <h2 id="step-5-title">What you're looking for</h2>
+
+    <label for="excited">What kind of job feels exciting right now? <span aria-hidden="true">*</span></label>
+    <p class="example">
+      example: "Something operations-y at a small business that's growing.
+      Bonus if I can be the person who builds the systems from scratch."
+    </p>
+    <textarea id="excited" class="tall" required aria-required="true"></textarea>
+    <div class="error-msg" id="err-excited"></div>
+
+    <label for="hardno">What kind of job is a HARD NO? (optional)</label>
+    <p class="hint">e.g. "no nights/weekends", "no commission-only", "no banks", "no startups under 10 people"</p>
+    <p class="example">example: "No commission-only roles. No restaurants. No 5am starts."</p>
+    <textarea id="hardno"></textarea>
+
+    <label for="pay">Money range you're willing to take? (optional)</label>
+    <p class="hint">You can say "whatever's fair" if you don't know — we'll skip salary filtering.</p>
+    <p class="example">example: $65k–$85k base, open to a little lower for the right team</p>
+    <input type="text" id="pay" autocomplete="off">
+
+    <label for="things">Anything else a hiring manager should know? (optional)</label>
+    <p class="hint">Health stuff, family stuff, schedule stuff — anything that should be on the table early.</p>
+    <p class="example">example: "I'm caring for my dad two afternoons a week — totally workable, just need a heads-up if a meeting moves into that window."</p>
+    <textarea id="things"></textarea>
+
+    <div class="actions">
+      <button type="button" class="secondary" data-back="5">Back</button>
+      <div class="right">
+        <button type="button" id="next-5">Review &amp; save</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card step" id="step-6" aria-labelledby="step-6-title" hidden>
+    <div class="step-title">Step 6 of 6</div>
+    <h2 id="step-6-title">Review &amp; save</h2>
+    <p class="hint">Here's the file the agent will read. Looks good? Save it. Want to tweak? Jump back.</p>
+    <div class="review" id="reviewPane" aria-live="polite"></div>
+
+    <div class="actions">
+      <button type="button" class="secondary" data-back="6">Back</button>
+      <div class="right">
+        <button type="button" class="secondary" id="copyBtn">Copy to clipboard</button>
+        <button type="button" class="secondary" id="downloadBtn">Download credentials.md</button>
+        <button type="button" id="saveLocalBtn" hidden>Save to ~/.config/jobscout/credentials.md</button>
+      </div>
+    </div>
+    <div class="status" id="saveStatus" role="status"></div>
+
+    <details>
+      <summary>What happens to my file?</summary>
+      <p>
+        <strong>Download:</strong> writes <code>credentials.md</code> to your browser's
+        Downloads folder. Move it to <code>~/.config/jobscout/credentials.md</code>
+        so the agent finds it.
+      </p>
+      <p>
+        <strong>Save locally:</strong> visible only when you launched this wizard with
+        <code>python3 jobscout.py setup --web</code>. The wizard talks to its bundled
+        Python server and writes the file straight to the right place. Nothing leaves
+        your machine.
+      </p>
+      <p>
+        <strong>Copy to clipboard:</strong> handy if you'd rather paste it into a text
+        editor and save it yourself.
+      </p>
+    </details>
+  </section>
+</main>
+
+<script>
+// ---------------------------------------------------------------------------
+// State + helpers
+// ---------------------------------------------------------------------------
+const STORAGE_KEY = "jobscout.wizard.v1";
+let isLocalServer = false;
+let currentStep = 1;
+
+const state = {
+  name: "",
+  city: "",
+  relocate: "",          // "yes" | "no" | "maybe: cities..."
+  email: "",
+  phone: "",
+  linkedin: "",
+  web: "",
+  story: "",
+  work_entries: [],
+  shipped_entries: [],
+  numbers: "",
+  skills: "",
+  tools: "",
+  superpowers: "",
+  excited_by: "",
+  hard_no: "",
+  pay: "",
+  things_to_know: "",
+  last_step: 1
+};
+
+// Detect if our Python server is hosting this page — if so, we can save
+// directly. Otherwise (file:// open or a static host) we offer download / copy.
+async function detectLocalServer() {
+  if (location.protocol === "file:") return false;
+  try {
+    const r = await fetch("/api/progress", { method: "GET" });
+    if (!r.ok) return false;
+    const data = await r.json();
+    if (data && data.state) {
+      Object.assign(state, data.state);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function saveLocal() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) { /* private mode / quota — fine */ }
+}
+
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) Object.assign(state, JSON.parse(raw));
+  } catch (e) { /* ignore */ }
+}
+
+async function maybePostProgress() {
+  if (!isLocalServer) return;
+  try {
+    await fetch("/api/save-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state })
+    });
+  } catch (e) { /* offline / server gone — local copy still saved */ }
+}
+
+function $(id) { return document.getElementById(id); }
+function $$(sel) { return Array.from(document.querySelectorAll(sel)); }
+
+function showStep(n) {
+  for (let i = 1; i <= 6; i++) {
+    const el = $("step-" + i);
+    if (el) el.hidden = (i !== n);
+  }
+  currentStep = n;
+  state.last_step = n;
+  // Update progress ticks
+  const ticks = $$(".progress .tick");
+  ticks.forEach((t, idx) => {
+    const step = idx + 1;
+    t.classList.remove("done", "current");
+    if (step < n) t.classList.add("done");
+    if (step === n) t.classList.add("current");
+  });
+  // Focus first interactive element of the new step for keyboard users
+  const first = document.querySelector(`#step-${n} input, #step-${n} textarea, #step-${n} button`);
+  if (first) first.focus({ preventScroll: false });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ---------------------------------------------------------------------------
+// Repeatable entries (work + shipped)
+// ---------------------------------------------------------------------------
+function renderRepeatable(containerId, items, placeholder) {
+  const container = $(containerId);
+  container.innerHTML = "";
+  if (items.length === 0) items.push("");
+  items.forEach((value, i) => {
+    const row = document.createElement("div");
+    row.className = "repeat-row";
+
+    const ta = document.createElement("textarea");
+    ta.value = value;
+    ta.placeholder = placeholder;
+    ta.setAttribute("aria-label", `${containerId} entry ${i + 1}`);
+    ta.addEventListener("input", () => {
+      items[i] = ta.value;
+      saveLocal();
+      maybePostProgress();
+    });
+
+    const rm = document.createElement("button");
+    rm.type = "button";
+    rm.className = "tiny danger";
+    rm.textContent = "Remove";
+    rm.setAttribute("aria-label", `Remove entry ${i + 1}`);
+    rm.addEventListener("click", () => {
+      items.splice(i, 1);
+      renderRepeatable(containerId, items, placeholder);
+      saveLocal();
+      maybePostProgress();
+    });
+
+    row.appendChild(ta);
+    if (items.length > 1) row.appendChild(rm);
+    container.appendChild(row);
+  });
+}
+
+function setupRepeatables() {
+  renderRepeatable("workEntries", state.work_entries, "Tell me about a job, project, or volunteer thing...");
+  renderRepeatable("shippedEntries", state.shipped_entries, "Something you made, built, or shipped...");
+  $("addWork").addEventListener("click", () => {
+    state.work_entries.push("");
+    renderRepeatable("workEntries", state.work_entries, "Tell me about a job, project, or volunteer thing...");
+  });
+  $("addShipped").addEventListener("click", () => {
+    state.shipped_entries.push("");
+    renderRepeatable("shippedEntries", state.shipped_entries, "Something you made, built, or shipped...");
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Form binding
+// ---------------------------------------------------------------------------
+function hydrateForm() {
+  $("name").value = state.name || "";
+  $("city").value = state.city || "";
+  $("email").value = state.email || "";
+  $("phone").value = state.phone || "";
+  $("linkedin").value = state.linkedin || "";
+  $("web").value = state.web || "";
+  $("story").value = state.story || "";
+  $("numbers").value = state.numbers || "";
+  $("skills").value = state.skills || "";
+  $("tools").value = state.tools || "";
+  $("superpowers").value = state.superpowers || "";
+  $("excited").value = state.excited_by || "";
+  $("hardno").value = state.hard_no || "";
+  $("pay").value = state.pay || "";
+  $("things").value = state.things_to_know || "";
+
+  // Relocate
+  const rel = (state.relocate || "").toLowerCase();
+  if (rel.startsWith("yes")) {
+    document.querySelector('input[name=relocate][value=yes]').checked = true;
+  } else if (rel.startsWith("no")) {
+    document.querySelector('input[name=relocate][value=no]').checked = true;
+  } else if (rel.startsWith("maybe")) {
+    document.querySelector('input[name=relocate][value=maybe]').checked = true;
+    const rest = rel.replace(/^maybe:?\s*/, "");
+    if (rest) {
+      $("relocateCities").value = rest;
+      $("relocateCitiesWrap").style.display = "";
+    }
+  }
+}
+
+function bindAutosave() {
+  const ids = [
+    ["name", "name"], ["city", "city"], ["email", "email"], ["phone", "phone"],
+    ["linkedin", "linkedin"], ["web", "web"], ["story", "story"],
+    ["numbers", "numbers"], ["skills", "skills"], ["tools", "tools"],
+    ["superpowers", "superpowers"], ["excited", "excited_by"], ["hardno", "hard_no"],
+    ["pay", "pay"], ["things", "things_to_know"]
+  ];
+  ids.forEach(([elId, stateKey]) => {
+    const el = $(elId);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      state[stateKey] = el.value;
+      saveLocal();
+      maybePostProgress();
+    });
+  });
+
+  // Relocate radios
+  document.querySelectorAll('input[name=relocate]').forEach(r => {
+    r.addEventListener("change", () => {
+      const v = r.value;
+      const wrap = $("relocateCitiesWrap");
+      if (v === "maybe") {
+        wrap.style.display = "";
+        const c = $("relocateCities").value.trim();
+        state.relocate = c ? `maybe: ${c}` : "maybe";
+      } else {
+        wrap.style.display = "none";
+        state.relocate = v;
+      }
+      saveLocal();
+      maybePostProgress();
+    });
+  });
+  $("relocateCities").addEventListener("input", () => {
+    const c = $("relocateCities").value.trim();
+    state.relocate = c ? `maybe: ${c}` : "maybe";
+    saveLocal();
+    maybePostProgress();
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Validation (same friendly rules as the CLI)
+// ---------------------------------------------------------------------------
+function validateEmail(v) {
+  if (!v) return null;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : "That doesn't look like an email — try again (e.g. you@example.com)";
+}
+
+function validateStep(step) {
+  function err(id, msg) {
+    const e = $("err-" + id);
+    if (e) e.textContent = msg || "";
+    return !msg;
+  }
+  // Clear all error fields first
+  ["name", "email", "story", "work", "skills", "excited"].forEach(id => err(id, ""));
+
+  if (step === 1) {
+    let ok = true;
+    if (!state.name.trim()) { err("name", "Please give us your name."); ok = false; }
+    if (!state.email.trim()) { err("email", "Please add an email so recruiters can reach you."); ok = false; }
+    else {
+      const e = validateEmail(state.email.trim());
+      if (e) { err("email", e); ok = false; }
+    }
+    return ok;
+  }
+  if (step === 2) {
+    if (!state.story.trim()) { err("story", "Even one sentence is a great start."); return false; }
+    return true;
+  }
+  if (step === 3) {
+    const real = state.work_entries.filter(e => e.trim());
+    if (real.length === 0) { err("work", "Add at least one job, project, or thing you've worked on."); return false; }
+    return true;
+  }
+  if (step === 4) {
+    if (!state.skills.trim()) { err("skills", "Tell us a little about what you can do."); return false; }
+    return true;
+  }
+  if (step === 5) {
+    if (!state.excited_by.trim()) { err("excited", "Tell us what kind of job feels exciting."); return false; }
+    return true;
+  }
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// Markdown rendering — must match setup.py:render_markdown exactly
+// ---------------------------------------------------------------------------
+function joinContact(s) {
+  const parts = [];
+  if (s.email) parts.push(s.email);
+  if (s.phone) parts.push(s.phone);
+  if (s.linkedin) parts.push(s.linkedin);
+  if (s.web) parts.push(s.web);
+  return parts.length ? parts.join(" | ") : "(not provided)";
+}
+function formatWhere(s) {
+  let where = s.city || "(not provided)";
+  const rel = (s.relocate || "").trim();
+  if (rel.startsWith("yes")) where += " (open to relocating)";
+  else if (rel.startsWith("maybe")) {
+    const rest = rel.replace(/^maybe:?\s*/, "").trim();
+    where += rest ? ` (open to relocating to ${rest})` : " (open to relocating for the right role)";
+  } else if (rel.startsWith("no")) where += " (not relocating)";
+  return where;
+}
+function bulletize(entries) {
+  const lines = [];
+  for (const raw of entries) {
+    const entry = (raw || "").trim();
+    if (!entry) continue;
+    const parts = entry.split(/\r?\n/);
+    const first = parts[0];
+    const rest = parts.slice(1).map(l => l.trim()).filter(Boolean).join("\n  ");
+    lines.push("- " + first + (rest ? "\n  " + rest : ""));
+  }
+  return lines.join("\n");
+}
+function renderMarkdown(s) {
+  const parts = [];
+  parts.push("# " + (s.name || "(your name)"));
+  parts.push("");
+  parts.push("**Where:** " + formatWhere(s));
+  parts.push("**Contact:** " + joinContact(s));
+  parts.push("");
+  parts.push("## Who I Am");
+  parts.push("");
+  parts.push((s.story || "").trim() || "(coffee-shop paragraph goes here)");
+  parts.push("");
+  parts.push("## What I've Done");
+  parts.push("");
+  const work = bulletize(s.work_entries);
+  const shipped = bulletize(s.shipped_entries);
+  if (work) parts.push(work);
+  if (shipped) {
+    if (work) parts.push("");
+    parts.push("**Things I've shipped or made:**");
+    parts.push("");
+    parts.push(shipped);
+  }
+  if ((s.numbers || "").trim()) {
+    parts.push("");
+    parts.push("**Numbers worth knowing:**");
+    parts.push("");
+    parts.push(s.numbers.trim());
+  }
+  parts.push("");
+  parts.push("## Skills");
+  parts.push("");
+  parts.push((s.skills || "").trim() || "(skills paragraph)");
+  if ((s.tools || "").trim()) {
+    parts.push("");
+    parts.push("**Tools / software I actually use:** " + s.tools.trim());
+  }
+  if ((s.superpowers || "").trim()) {
+    parts.push("");
+    parts.push("**Underrated strengths:** " + s.superpowers.trim());
+  }
+  parts.push("");
+  parts.push("## What I'm Looking For");
+  parts.push("");
+  parts.push((s.excited_by || "").trim() || "(what kind of role excites you)");
+  if ((s.hard_no || "").trim()) {
+    parts.push("");
+    parts.push("**Not interested in:** " + s.hard_no.trim());
+  }
+  if ((s.pay || "").trim()) {
+    parts.push("");
+    parts.push("**Pay:** " + s.pay.trim());
+  }
+  if ((s.things_to_know || "").trim()) {
+    parts.push("");
+    parts.push("## Things to Know Up Front");
+    parts.push("");
+    parts.push(s.things_to_know.trim());
+  }
+  parts.push("");
+  return parts.join("\n");
+}
+
+function refreshReview() {
+  $("reviewPane").textContent = renderMarkdown(state);
+}
+
+// ---------------------------------------------------------------------------
+// Save actions
+// ---------------------------------------------------------------------------
+function downloadFile(filename, text) {
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }, 100);
+}
+
+async function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  // Fallback
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.position = "absolute";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  const ok = document.execCommand("copy");
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function setStatus(msg, isError) {
+  const el = $("saveStatus");
+  el.textContent = msg;
+  el.classList.toggle("error", !!isError);
+}
+
+async function saveToServer() {
+  setStatus("Saving...", false);
+  try {
+    const md = renderMarkdown(state);
+    const r = await fetch("/api/save-credentials", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state, markdown: md })
+    });
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || "save failed");
+    setStatus("Saved! File written to " + data.path, false);
+  } catch (e) {
+    setStatus("Couldn't save: " + e.message + ". Try the Download button instead.", true);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Wire-up
+// ---------------------------------------------------------------------------
+async function init() {
+  loadLocal();
+  isLocalServer = await detectLocalServer();
+  if (isLocalServer) {
+    $("saveLocalBtn").hidden = false;
+  }
+  hydrateForm();
+  bindAutosave();
+  setupRepeatables();
+
+  // Next buttons
+  for (let i = 1; i <= 5; i++) {
+    $("next-" + i).addEventListener("click", () => {
+      if (!validateStep(i)) return;
+      const next = i + 1;
+      showStep(next);
+      saveLocal();
+      maybePostProgress();
+      if (next === 6) refreshReview();
+    });
+  }
+  // Back buttons
+  document.querySelectorAll("[data-back]").forEach(b => {
+    b.addEventListener("click", () => {
+      const cur = parseInt(b.getAttribute("data-back"), 10);
+      showStep(Math.max(1, cur - 1));
+    });
+  });
+
+  // Save actions
+  $("downloadBtn").addEventListener("click", () => {
+    refreshReview();
+    downloadFile("credentials.md", renderMarkdown(state));
+    setStatus("Downloaded. Move it to ~/.config/jobscout/credentials.md", false);
+  });
+  $("copyBtn").addEventListener("click", async () => {
+    refreshReview();
+    const ok = await copyToClipboard(renderMarkdown(state));
+    setStatus(ok ? "Copied to clipboard." : "Copy didn't work — try Download instead.", !ok);
+  });
+  $("saveLocalBtn").addEventListener("click", saveToServer);
+
+  // If progress points to a later step, restore the user's place
+  const startAt = Math.max(1, Math.min(6, state.last_step || 1));
+  showStep(startAt);
+  if (startAt === 6) refreshReview();
+}
+
+init();
+</script>
+</body>
+</html>

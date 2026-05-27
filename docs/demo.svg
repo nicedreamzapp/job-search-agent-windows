@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-labelledby="title desc" preserveAspectRatio="xMidYMid meet">
+  <title id="title">job-search-agent demo — multi-scene animated walkthrough</title>
+  <desc id="desc">
+    A 60-second, seven-scene animated walkthrough of the job-search-agent project for user
+    Jane Doe. Scene 1 introduces the project wordmark and tagline. Scene 2 shows a terminal
+    booting the jobscout script. Scene 3 shows a dashboard scanning 1,200 roles across six
+    public AI companies (Anthropic, Modal, Replit, Cohere, Cursor, Stripe). Scene 4 shows a
+    filter pipeline reducing 6,006 roles to 47. Scene 5 shows the scoring engine ranking
+    three top roles (Modal Labs FDE-ML 9.2, Anthropic Solutions Architect 8.9, Replit Senior
+    PM 8.6). Scene 6 reveals the top-match card for Modal Labs. Scene 7 is the call to
+    action with the project logo and repo URL. Animation loops every 60 seconds.
+  </desc>
+
+  <defs>
+    <style>
+      .mono   { font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace; }
+      .sans   { font-family: system-ui, -apple-system, "Segoe UI", Inter, "Helvetica Neue", Arial, sans-serif; }
+      .b      { font-weight: 700; }
+      .sb     { font-weight: 600; }
+    </style>
+
+    <!-- ============= GRADIENTS ============= -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#0f1419"/>
+      <stop offset="55%"  stop-color="#11151c"/>
+      <stop offset="100%" stop-color="#1a1f2e"/>
+    </linearGradient>
+    <linearGradient id="auroraGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#1e293b"/>
+      <stop offset="50%"  stop-color="#0f1c2e"/>
+      <stop offset="100%" stop-color="#1e1b3a"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1c2333"/>
+      <stop offset="100%" stop-color="#161b27"/>
+    </linearGradient>
+    <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="ctaGlow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%"   stop-color="#10b981" stop-opacity="0.0"/>
+      <stop offset="50%"  stop-color="#10b981" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <radialGradient id="radialFade" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%"   stop-color="#10b981" stop-opacity="0.18"/>
+      <stop offset="60%"  stop-color="#10b981" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- ============= FILTERS ============= -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="8" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- ============= REUSABLE TRAFFIC LIGHTS ============= -->
+    <g id="trafficLights">
+      <circle cx="0"  cy="0" r="7" fill="#ff5f57"/>
+      <circle cx="22" cy="0" r="7" fill="#febc2e"/>
+      <circle cx="44" cy="0" r="7" fill="#28c840"/>
+    </g>
+  </defs>
+
+  <!-- ============= MASTER LOOP DRIVER (60s) ============= -->
+  <rect width="1" height="1" x="-10" y="-10" fill="none" opacity="0">
+    <animate id="loop" attributeName="x" from="-10" to="-10" dur="60s" begin="0s;loop.end" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ============= GLOBAL BACKGROUND ============= -->
+  <rect width="1280" height="720" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid texture (faint) -->
+  <g opacity="0.06" stroke="#64748b" stroke-width="0.5">
+    <path d="M0 120 H1280 M0 240 H1280 M0 360 H1280 M0 480 H1280 M0 600 H1280"/>
+    <path d="M160 0 V720 M320 0 V720 M480 0 V720 M640 0 V720 M800 0 V720 M960 0 V720 M1120 0 V720"/>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 1 — COLD OPEN (0–3s): wordmark + tagline
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.13;0.83;1" dur="3s" begin="0s;loop.end" fill="freeze"/>
+
+    <!-- background ambient glow -->
+    <ellipse cx="640" cy="360" rx="520" ry="240" fill="url(#radialFade)"/>
+
+    <!-- wordmark — staggered letter fade-in -->
+    <g class="sans b" font-size="78" fill="#f1f5f9" text-anchor="middle">
+      <text x="640" y="350">
+        <tspan opacity="0">j<animate attributeName="opacity" to="1" begin="0.20s;loop.end+0.20s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">o<animate attributeName="opacity" to="1" begin="0.27s;loop.end+0.27s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">b<animate attributeName="opacity" to="1" begin="0.34s;loop.end+0.34s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0.55" fill="#10b981">-<animate attributeName="opacity" to="1" begin="0.41s;loop.end+0.41s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">s<animate attributeName="opacity" to="1" begin="0.48s;loop.end+0.48s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">e<animate attributeName="opacity" to="1" begin="0.55s;loop.end+0.55s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">a<animate attributeName="opacity" to="1" begin="0.62s;loop.end+0.62s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">r<animate attributeName="opacity" to="1" begin="0.69s;loop.end+0.69s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">c<animate attributeName="opacity" to="1" begin="0.76s;loop.end+0.76s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">h<animate attributeName="opacity" to="1" begin="0.83s;loop.end+0.83s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0.55" fill="#10b981">-<animate attributeName="opacity" to="1" begin="0.90s;loop.end+0.90s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">a<animate attributeName="opacity" to="1" begin="0.97s;loop.end+0.97s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">g<animate attributeName="opacity" to="1" begin="1.04s;loop.end+1.04s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">e<animate attributeName="opacity" to="1" begin="1.11s;loop.end+1.11s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">n<animate attributeName="opacity" to="1" begin="1.18s;loop.end+1.18s" dur="0.3s" fill="freeze"/></tspan><tspan opacity="0">t<animate attributeName="opacity" to="1" begin="1.25s;loop.end+1.25s" dur="0.3s" fill="freeze"/></tspan>
+      </text>
+    </g>
+
+    <!-- pulsing tagline -->
+    <text x="640" y="410" text-anchor="middle" class="sans" font-size="22" fill="#94a3b8" opacity="0">
+      wake up to the right roles
+      <animate attributeName="opacity" values="0;0.6;1;0.7;1;0" keyTimes="0;0.45;0.6;0.75;0.9;1" dur="3s" begin="0s;loop.end" fill="freeze"/>
+    </text>
+
+    <!-- thin accent underline -->
+    <rect x="540" y="370" width="0" height="2" fill="url(#emerald)" rx="1">
+      <animate attributeName="width" from="0" to="200" begin="1.4s;loop.end+1.4s" dur="0.6s" fill="freeze" keySplines="0.2 0.8 0.2 1" calcMode="spline" keyTimes="0;1"/>
+      <animate attributeName="x" from="640" to="540" begin="1.4s;loop.end+1.4s" dur="0.6s" fill="freeze" keySplines="0.2 0.8 0.2 1" calcMode="spline" keyTimes="0;1"/>
+    </rect>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 2 — TERMINAL KICKOFF (3–12s)
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.04;0.93;1" dur="9s" begin="3s;loop.end+3s" fill="freeze"/>
+
+    <!-- terminal window with shadow -->
+    <g filter="url(#dropShadow)">
+      <rect x="160" y="100" width="960" height="520" rx="14" fill="#11141b"/>
+      <rect x="160" y="100" width="960" height="44" rx="14" fill="#1a1f2b"/>
+      <rect x="160" y="128" width="960" height="16" fill="#1a1f2b"/>
+      <use href="#trafficLights" x="190" y="122"/>
+      <text x="640" y="127" text-anchor="middle" class="mono" font-size="13" fill="#64748b">
+        jane@laptop — jobscout — 132×40
+      </text>
+    </g>
+
+    <!-- prompt line -->
+    <g class="mono" font-size="16">
+      <text x="190" y="190" fill="#cbd5e1">
+        <tspan class="b" fill="#34d399">jane@laptop</tspan><tspan fill="#64748b"> </tspan><tspan fill="#60a5fa">~/job-search-agent</tspan><tspan fill="#64748b"> $ </tspan>
+      </text>
+      <!-- typed command, character chunks -->
+      <text x="450" y="190" fill="#c4b5fd">
+        <tspan opacity="0">python3<animate attributeName="opacity" to="1" begin="3.6s;loop.end+3.6s" dur="0.01s" fill="freeze"/></tspan><tspan opacity="0"> jobscout.py<animate attributeName="opacity" to="1" begin="4.1s;loop.end+4.1s" dur="0.01s" fill="freeze"/></tspan><tspan opacity="0"> --verbose<animate attributeName="opacity" to="1" begin="4.7s;loop.end+4.7s" dur="0.01s" fill="freeze"/></tspan>
+      </text>
+      <!-- blinking cursor -->
+      <rect x="450" y="177" width="9" height="18" fill="#cbd5e1">
+        <animate attributeName="opacity" values="1;0;1;0;1" dur="1.6s" begin="3.0s;loop.end+3.0s" repeatCount="1"/>
+        <animate attributeName="opacity" to="0" begin="5.2s;loop.end+5.2s" dur="0.01s" fill="freeze"/>
+      </rect>
+    </g>
+
+    <!-- streamed output lines: each slides in from below with ease-out -->
+    <g class="mono" font-size="15">
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="5.6s;loop.end+5.6s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="5.6s;loop.end+5.6s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="230" fill="#cbd5e1"><tspan fill="#fb923c">[boot]</tspan> loading credentials.md <tspan fill="#64748b">(1,847 words)</tspan> <tspan fill="#10b981">OK</tspan></text>
+      </g>
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="6.1s;loop.end+6.1s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="6.1s;loop.end+6.1s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="262" fill="#cbd5e1"><tspan fill="#fb923c">[boot]</tspan> reading companies.json <tspan fill="#64748b">(74 companies, 3 ATSes)</tspan> <tspan fill="#10b981">OK</tspan></text>
+      </g>
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="6.7s;loop.end+6.7s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="6.7s;loop.end+6.7s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="294" fill="#cbd5e1"><tspan fill="#fb923c">[boot]</tspan> profile loaded <tspan fill="#64748b">(allow_list: 6, filters: 3 active)</tspan> <tspan fill="#10b981">OK</tspan></text>
+      </g>
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="7.3s;loop.end+7.3s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="7.3s;loop.end+7.3s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="326" fill="#cbd5e1"><tspan fill="#fb923c">[boot]</tspan> warming local LLM <tspan fill="#64748b">(llama-3.1-8b-instruct)</tspan> <tspan fill="#10b981">OK</tspan></text>
+      </g>
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="7.9s;loop.end+7.9s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="7.9s;loop.end+7.9s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="358" fill="#cbd5e1"><tspan fill="#fb923c">[boot]</tspan> opening connectors <tspan fill="#64748b">(ashby, greenhouse, lever)</tspan> <tspan fill="#10b981">OK</tspan></text>
+      </g>
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="8.5s;loop.end+8.5s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="8.5s;loop.end+8.5s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="394" fill="#94a3b8">jobscout <tspan fill="#cbd5e1" class="b">v0.4.0</tspan>  <tspan fill="#64748b">·</tspan>  searching <tspan fill="#fb923c">6 companies</tspan> for <tspan fill="#c4b5fd">Jane Doe</tspan></text>
+      </g>
+      <g opacity="0" transform="translate(0,16)">
+        <animate attributeName="opacity" to="1" begin="9.1s;loop.end+9.1s" dur="0.3s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 16" to="0 0" begin="9.1s;loop.end+9.1s" dur="0.3s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+        <text x="190" y="426" fill="#64748b">starting market scan...</text>
+      </g>
+      <!-- spinner / loading bar -->
+      <g opacity="0">
+        <animate attributeName="opacity" to="1" begin="9.7s;loop.end+9.7s" dur="0.3s" fill="freeze"/>
+        <rect x="190" y="450" width="600" height="4" rx="2" fill="#1e293b"/>
+        <rect x="190" y="450" width="0" height="4" rx="2" fill="url(#emerald)">
+          <animate attributeName="width" from="0" to="600" begin="9.7s;loop.end+9.7s" dur="2s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+        </rect>
+        <text x="190" y="486" class="mono" font-size="13" fill="#64748b">connecting to market...</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 3 — FETCH DASHBOARD (12–22s) — 2x3 grid of company cards
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.92;1" dur="10s" begin="12s;loop.end+12s" fill="freeze"/>
+
+    <!-- diagonal wipe-in overlay -->
+    <g>
+      <rect x="0" y="0" width="1280" height="720" fill="url(#auroraGrad)"/>
+      <rect x="-1400" y="0" width="1400" height="720" fill="#11141b" opacity="0.9" transform="skewX(-15)">
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="2000 0" begin="12s;loop.end+12s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.7 0 0.3 1" keyTimes="0;1" additive="sum"/>
+      </rect>
+    </g>
+
+    <!-- header -->
+    <g class="sans">
+      <text x="80" y="80" font-size="14" fill="#10b981" class="b" letter-spacing="3">SCANNING THE MARKET</text>
+      <text x="80" y="118" font-size="32" fill="#f1f5f9" class="b">Live job counts across 6 boards</text>
+      <text x="80" y="148" font-size="16" fill="#64748b">Ashby · Greenhouse · Lever — public APIs, no auth</text>
+    </g>
+
+    <!-- 2x3 grid: x = 80, 460, 840; y = 200, 420 -->
+    <!-- ============= CARD 1: ANTHROPIC ============= -->
+    <g transform="translate(80,200)">
+      <rect width="340" height="180" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="24" y="42" class="mono b" font-size="20" fill="#f1f5f9">ANTHROPIC</text>
+      <text x="24" y="62" class="mono" font-size="12" fill="#64748b">ashby · ai safety</text>
+      <!-- ticker counter -->
+      <text x="316" y="62" text-anchor="end" class="mono b" font-size="42" fill="#10b981">
+        <tspan opacity="0">0<animate attributeName="opacity" to="1" begin="12.7s;loop.end+12.7s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="12.78s;loop.end+12.78s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">87<animate attributeName="opacity" to="1" begin="12.8s;loop.end+12.8s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="12.88s;loop.end+12.88s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">194<animate attributeName="opacity" to="1" begin="12.9s;loop.end+12.9s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="12.98s;loop.end+12.98s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">301<animate attributeName="opacity" to="1" begin="13.0s;loop.end+13.0s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.08s;loop.end+13.08s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">358<animate attributeName="opacity" to="1" begin="13.1s;loop.end+13.1s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.18s;loop.end+13.18s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">390<animate attributeName="opacity" to="1" begin="13.2s;loop.end+13.2s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="24" y="108" class="sans" font-size="12" fill="#64748b">open roles</text>
+      <!-- progress bar -->
+      <rect x="24" y="130" width="292" height="6" rx="3" fill="#1e293b"/>
+      <rect x="24" y="130" width="0" height="6" rx="3" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="292" begin="12.7s;loop.end+12.7s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="24" y="160" class="mono" font-size="11" fill="#10b981">OK fetched</text>
+    </g>
+
+    <!-- ============= CARD 2: MODAL ============= -->
+    <g transform="translate(460,200)">
+      <rect width="340" height="180" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="24" y="42" class="mono b" font-size="20" fill="#f1f5f9">MODAL</text>
+      <text x="24" y="62" class="mono" font-size="12" fill="#64748b">greenhouse · gpu infra</text>
+      <text x="316" y="62" text-anchor="end" class="mono b" font-size="42" fill="#10b981">
+        <tspan opacity="0">0<animate attributeName="opacity" to="1" begin="13.0s;loop.end+13.0s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.08s;loop.end+13.08s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">8<animate attributeName="opacity" to="1" begin="13.1s;loop.end+13.1s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.18s;loop.end+13.18s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">17<animate attributeName="opacity" to="1" begin="13.2s;loop.end+13.2s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.28s;loop.end+13.28s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">25<animate attributeName="opacity" to="1" begin="13.3s;loop.end+13.3s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.38s;loop.end+13.38s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">31<animate attributeName="opacity" to="1" begin="13.4s;loop.end+13.4s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="24" y="108" class="sans" font-size="12" fill="#64748b">open roles</text>
+      <rect x="24" y="130" width="292" height="6" rx="3" fill="#1e293b"/>
+      <rect x="24" y="130" width="0" height="6" rx="3" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="292" begin="13.0s;loop.end+13.0s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="24" y="160" class="mono" font-size="11" fill="#10b981">OK fetched</text>
+    </g>
+
+    <!-- ============= CARD 3: REPLIT ============= -->
+    <g transform="translate(840,200)">
+      <rect width="340" height="180" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="24" y="42" class="mono b" font-size="20" fill="#f1f5f9">REPLIT</text>
+      <text x="24" y="62" class="mono" font-size="12" fill="#64748b">greenhouse · dev tools</text>
+      <text x="316" y="62" text-anchor="end" class="mono b" font-size="42" fill="#10b981">
+        <tspan opacity="0">0<animate attributeName="opacity" to="1" begin="13.3s;loop.end+13.3s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.38s;loop.end+13.38s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">22<animate attributeName="opacity" to="1" begin="13.4s;loop.end+13.4s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.48s;loop.end+13.48s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">45<animate attributeName="opacity" to="1" begin="13.5s;loop.end+13.5s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.58s;loop.end+13.58s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">66<animate attributeName="opacity" to="1" begin="13.6s;loop.end+13.6s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.68s;loop.end+13.68s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">80<animate attributeName="opacity" to="1" begin="13.7s;loop.end+13.7s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="24" y="108" class="sans" font-size="12" fill="#64748b">open roles</text>
+      <rect x="24" y="130" width="292" height="6" rx="3" fill="#1e293b"/>
+      <rect x="24" y="130" width="0" height="6" rx="3" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="292" begin="13.3s;loop.end+13.3s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="24" y="160" class="mono" font-size="11" fill="#10b981">OK fetched</text>
+    </g>
+
+    <!-- ============= CARD 4: COHERE ============= -->
+    <g transform="translate(80,420)">
+      <rect width="340" height="180" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="24" y="42" class="mono b" font-size="20" fill="#f1f5f9">COHERE</text>
+      <text x="24" y="62" class="mono" font-size="12" fill="#64748b">greenhouse · enterprise nlp</text>
+      <text x="316" y="62" text-anchor="end" class="mono b" font-size="42" fill="#10b981">
+        <tspan opacity="0">0<animate attributeName="opacity" to="1" begin="13.6s;loop.end+13.6s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.68s;loop.end+13.68s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">35<animate attributeName="opacity" to="1" begin="13.7s;loop.end+13.7s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.78s;loop.end+13.78s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">71<animate attributeName="opacity" to="1" begin="13.8s;loop.end+13.8s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.88s;loop.end+13.88s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">104<animate attributeName="opacity" to="1" begin="13.9s;loop.end+13.9s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.98s;loop.end+13.98s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">131<animate attributeName="opacity" to="1" begin="14.0s;loop.end+14.0s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="24" y="108" class="sans" font-size="12" fill="#64748b">open roles</text>
+      <rect x="24" y="130" width="292" height="6" rx="3" fill="#1e293b"/>
+      <rect x="24" y="130" width="0" height="6" rx="3" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="292" begin="13.6s;loop.end+13.6s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="24" y="160" class="mono" font-size="11" fill="#10b981">OK fetched</text>
+    </g>
+
+    <!-- ============= CARD 5: CURSOR ============= -->
+    <g transform="translate(460,420)">
+      <rect width="340" height="180" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="24" y="42" class="mono b" font-size="20" fill="#f1f5f9">CURSOR</text>
+      <text x="24" y="62" class="mono" font-size="12" fill="#64748b">ashby · code editor</text>
+      <text x="316" y="62" text-anchor="end" class="mono b" font-size="42" fill="#10b981">
+        <tspan opacity="0">0<animate attributeName="opacity" to="1" begin="13.9s;loop.end+13.9s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="13.98s;loop.end+13.98s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">24<animate attributeName="opacity" to="1" begin="14.0s;loop.end+14.0s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.08s;loop.end+14.08s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">52<animate attributeName="opacity" to="1" begin="14.1s;loop.end+14.1s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.18s;loop.end+14.18s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">74<animate attributeName="opacity" to="1" begin="14.2s;loop.end+14.2s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.28s;loop.end+14.28s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">89<animate attributeName="opacity" to="1" begin="14.3s;loop.end+14.3s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="24" y="108" class="sans" font-size="12" fill="#64748b">open roles</text>
+      <rect x="24" y="130" width="292" height="6" rx="3" fill="#1e293b"/>
+      <rect x="24" y="130" width="0" height="6" rx="3" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="292" begin="13.9s;loop.end+13.9s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="24" y="160" class="mono" font-size="11" fill="#10b981">OK fetched</text>
+    </g>
+
+    <!-- ============= CARD 6: STRIPE ============= -->
+    <g transform="translate(840,420)">
+      <rect width="340" height="180" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="24" y="42" class="mono b" font-size="20" fill="#f1f5f9">STRIPE</text>
+      <text x="24" y="62" class="mono" font-size="12" fill="#64748b">greenhouse · payments</text>
+      <text x="316" y="62" text-anchor="end" class="mono b" font-size="42" fill="#10b981">
+        <tspan opacity="0">0<animate attributeName="opacity" to="1" begin="14.2s;loop.end+14.2s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.28s;loop.end+14.28s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">120<animate attributeName="opacity" to="1" begin="14.3s;loop.end+14.3s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.38s;loop.end+14.38s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">240<animate attributeName="opacity" to="1" begin="14.4s;loop.end+14.4s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.48s;loop.end+14.48s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">370<animate attributeName="opacity" to="1" begin="14.5s;loop.end+14.5s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="14.58s;loop.end+14.58s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="316" y="62" text-anchor="end">479<animate attributeName="opacity" to="1" begin="14.6s;loop.end+14.6s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="24" y="108" class="sans" font-size="12" fill="#64748b">open roles</text>
+      <rect x="24" y="130" width="292" height="6" rx="3" fill="#1e293b"/>
+      <rect x="24" y="130" width="0" height="6" rx="3" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="292" begin="14.2s;loop.end+14.2s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="24" y="160" class="mono" font-size="11" fill="#10b981">OK fetched</text>
+    </g>
+
+    <!-- footer totals -->
+    <g opacity="0">
+      <animate attributeName="opacity" values="0;1" keyTimes="0;1" dur="0.4s" begin="16.0s;loop.end+16.0s" fill="freeze"/>
+      <text x="80" y="660" class="sans" font-size="20" fill="#cbd5e1">
+        <tspan class="b" fill="#10b981">1,200</tspan> roles fetched across <tspan class="b" fill="#f1f5f9">6 boards</tspan> in <tspan class="b" fill="#f1f5f9">2.4s</tspan>
+      </text>
+      <text x="1200" y="660" text-anchor="end" class="mono" font-size="14" fill="#64748b">6/6 boards OK</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 4 — FILTER PIPELINE (22–30s)
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.07;0.91;1" dur="8s" begin="22s;loop.end+22s" fill="freeze"/>
+
+    <!-- vertical wipe -->
+    <rect x="0" y="-720" width="1280" height="720" fill="#0c1018">
+      <animateTransform attributeName="transform" type="translate" from="0 0" to="0 720" begin="22s;loop.end+22s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.7 0 0.3 1" keyTimes="0;1"/>
+    </rect>
+
+    <!-- header -->
+    <g class="sans">
+      <text x="80" y="80" font-size="14" fill="#f59e0b" class="b" letter-spacing="3">FILTER PIPELINE</text>
+      <text x="80" y="118" font-size="32" fill="#f1f5f9" class="b">Drop everything that isn't a real fit</text>
+    </g>
+
+    <!-- pipeline arrows (3 stages) -->
+    <!-- Stage 1: 6006 -> 5820  (drop junior/intern) -->
+    <g transform="translate(100,260)">
+      <rect width="280" height="220" rx="14" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="140" y="44" text-anchor="middle" class="sans" font-size="12" fill="#64748b" letter-spacing="2">STAGE 1</text>
+      <text x="140" y="80" text-anchor="middle" class="sans b" font-size="20" fill="#f1f5f9">Drop junior/intern</text>
+      <!-- ticker number -->
+      <text x="140" y="150" text-anchor="middle" class="mono b" font-size="56" fill="#f59e0b">
+        <tspan opacity="0">6,006<animate attributeName="opacity" to="1" begin="22.7s;loop.end+22.7s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="23.3s;loop.end+23.3s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">5,941<animate attributeName="opacity" to="1" begin="23.3s;loop.end+23.3s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="23.42s;loop.end+23.42s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">5,882<animate attributeName="opacity" to="1" begin="23.42s;loop.end+23.42s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="23.54s;loop.end+23.54s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">5,820<animate attributeName="opacity" to="1" begin="23.54s;loop.end+23.54s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="140" y="186" text-anchor="middle" class="sans" font-size="13" fill="#64748b">roles remaining</text>
+    </g>
+
+    <!-- arrow 1 -->
+    <g transform="translate(380,370)" opacity="0">
+      <animate attributeName="opacity" to="1" begin="23.6s;loop.end+23.6s" dur="0.3s" fill="freeze"/>
+      <path d="M0 0 L48 0" stroke="#475569" stroke-width="2" fill="none"/>
+      <path d="M48 0 L40 -6 M48 0 L40 6" stroke="#475569" stroke-width="2" fill="none"/>
+    </g>
+
+    <!-- Stage 2: 5820 -> 186 -->
+    <g transform="translate(440,260)">
+      <rect width="280" height="220" rx="14" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="140" y="44" text-anchor="middle" class="sans" font-size="12" fill="#64748b" letter-spacing="2">STAGE 2</text>
+      <text x="140" y="80" text-anchor="middle" class="sans b" font-size="20" fill="#f1f5f9">Drop already-applied</text>
+      <text x="140" y="150" text-anchor="middle" class="mono b" font-size="56" fill="#f59e0b">
+        <tspan opacity="0">5,820<animate attributeName="opacity" to="1" begin="24.2s;loop.end+24.2s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="24.8s;loop.end+24.8s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">2,910<animate attributeName="opacity" to="1" begin="24.8s;loop.end+24.8s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="24.92s;loop.end+24.92s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">1,074<animate attributeName="opacity" to="1" begin="24.92s;loop.end+24.92s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="25.04s;loop.end+25.04s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">312<animate attributeName="opacity" to="1" begin="25.04s;loop.end+25.04s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="140" y="186" text-anchor="middle" class="sans" font-size="13" fill="#64748b">roles remaining</text>
+    </g>
+
+    <!-- arrow 2 -->
+    <g transform="translate(720,370)" opacity="0">
+      <animate attributeName="opacity" to="1" begin="25.1s;loop.end+25.1s" dur="0.3s" fill="freeze"/>
+      <path d="M0 0 L48 0" stroke="#475569" stroke-width="2" fill="none"/>
+      <path d="M48 0 L40 -6 M48 0 L40 6" stroke="#475569" stroke-width="2" fill="none"/>
+    </g>
+
+    <!-- Stage 3: 312 -> 47 -->
+    <g transform="translate(780,260)">
+      <rect width="280" height="220" rx="14" fill="url(#cardGrad)" stroke="#10b981" stroke-width="2"/>
+      <text x="140" y="44" text-anchor="middle" class="sans" font-size="12" fill="#10b981" letter-spacing="2">STAGE 3</text>
+      <text x="140" y="80" text-anchor="middle" class="sans b" font-size="20" fill="#f1f5f9">Score ≥ 7</text>
+      <text x="140" y="150" text-anchor="middle" class="mono b" font-size="56" fill="#10b981">
+        <tspan opacity="0">312<animate attributeName="opacity" to="1" begin="25.7s;loop.end+25.7s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="26.2s;loop.end+26.2s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">198<animate attributeName="opacity" to="1" begin="26.2s;loop.end+26.2s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="26.32s;loop.end+26.32s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">112<animate attributeName="opacity" to="1" begin="26.32s;loop.end+26.32s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="26.44s;loop.end+26.44s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="140" y="150" text-anchor="middle">47<animate attributeName="opacity" to="1" begin="26.44s;loop.end+26.44s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+      <text x="140" y="186" text-anchor="middle" class="sans" font-size="13" fill="#10b981">high-fit matches</text>
+    </g>
+
+    <!-- rejection icons flying off-screen -->
+    <g class="mono" font-size="14" fill="#94a3b8">
+      <text x="200" y="560" opacity="0">junior dev <tspan fill="#f87171">✕</tspan>
+        <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.4;1" dur="1.4s" begin="23.0s;loop.end+23.0s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-300 -40" begin="23.0s;loop.end+23.0s" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+      </text>
+      <text x="320" y="600" opacity="0">SF on-site only <tspan fill="#f87171">✕</tspan>
+        <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.4;1" dur="1.4s" begin="23.4s;loop.end+23.4s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-380 -20" begin="23.4s;loop.end+23.4s" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+      </text>
+      <text x="500" y="580" opacity="0">applied 3w ago <tspan fill="#f87171">✕</tspan>
+        <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.4;1" dur="1.4s" begin="24.4s;loop.end+24.4s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-340 30" begin="24.4s;loop.end+24.4s" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+      </text>
+      <text x="640" y="600" opacity="0">intern role <tspan fill="#f87171">✕</tspan>
+        <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.4;1" dur="1.4s" begin="24.7s;loop.end+24.7s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-440 -10" begin="24.7s;loop.end+24.7s" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+      </text>
+      <text x="820" y="580" opacity="0">score 4.2 <tspan fill="#f87171">✕</tspan>
+        <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.4;1" dur="1.4s" begin="25.5s;loop.end+25.5s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-500 20" begin="25.5s;loop.end+25.5s" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+      </text>
+      <text x="940" y="600" opacity="0">manager track <tspan fill="#f87171">✕</tspan>
+        <animate attributeName="opacity" values="0;1;0" keyTimes="0;0.4;1" dur="1.4s" begin="25.9s;loop.end+25.9s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-600 -10" begin="25.9s;loop.end+25.9s" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1"/>
+      </text>
+    </g>
+
+    <!-- footer -->
+    <g opacity="0">
+      <animate attributeName="opacity" values="0;1" keyTimes="0;1" dur="0.5s" begin="27.0s;loop.end+27.0s" fill="freeze"/>
+      <text x="640" y="660" text-anchor="middle" class="sans" font-size="22" fill="#cbd5e1">
+        <tspan class="b" fill="#f87171">5,959 dropped</tspan>  ·  <tspan class="b" fill="#10b981">47 remain</tspan>  ·  ready for scoring
+      </text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 5 — SCORING ENGINE (30–42s)
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.05;0.94;1" dur="12s" begin="30s;loop.end+30s" fill="freeze"/>
+
+    <!-- radial wipe (a circle that expands to cover then sets to 0 quickly) -->
+    <g>
+      <circle cx="640" cy="360" r="0" fill="#0c1018">
+        <animate attributeName="r" from="0" to="1100" begin="30s;loop.end+30s" dur="0.6s" fill="freeze" calcMode="spline" keySplines="0.6 0 0.3 1" keyTimes="0;1"/>
+        <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.4;1" dur="0.7s" begin="30s;loop.end+30s" fill="freeze"/>
+      </circle>
+    </g>
+
+    <!-- header -->
+    <g class="sans">
+      <text x="80" y="80" font-size="14" fill="#a78bfa" class="b" letter-spacing="3">SCORING ENGINE</text>
+      <text x="80" y="118" font-size="32" fill="#f1f5f9" class="b">Local LLM grades every survivor</text>
+      <!-- pulsing "scoring..." indicator -->
+      <g transform="translate(80,148)">
+        <circle cx="6" cy="-4" r="4" fill="#a78bfa">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" begin="30.5s;loop.end+30.5s" repeatCount="indefinite"/>
+        </circle>
+        <text x="20" y="0" font-size="14" fill="#a78bfa" class="mono">scoring 47 roles against jane-doe-profile.md...</text>
+      </g>
+    </g>
+
+    <!-- Bar 1: Modal Labs FDE-ML — 9.2 -->
+    <g transform="translate(80,220)">
+      <text x="0" y="0" class="sans b" font-size="18" fill="#f1f5f9">Forward Deployed Engineer, ML</text>
+      <text x="0" y="22" class="mono" font-size="13" fill="#64748b">Modal Labs · remote · $180K–$250K + equity</text>
+      <!-- track -->
+      <rect x="0" y="42" width="980" height="20" rx="10" fill="#1a2230"/>
+      <!-- fill -->
+      <rect x="0" y="42" width="0" height="20" rx="10" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="901.6" begin="31.2s;loop.end+31.2s" dur="1.1s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <!-- score number -->
+      <text x="1010" y="58" class="mono b" font-size="22" fill="#10b981">
+        <tspan opacity="0">0.0<animate attributeName="opacity" to="1" begin="31.2s;loop.end+31.2s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="31.55s;loop.end+31.55s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">3.6<animate attributeName="opacity" to="1" begin="31.55s;loop.end+31.55s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="31.85s;loop.end+31.85s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">6.4<animate attributeName="opacity" to="1" begin="31.85s;loop.end+31.85s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="32.1s;loop.end+32.1s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">8.1<animate attributeName="opacity" to="1" begin="32.1s;loop.end+32.1s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="32.3s;loop.end+32.3s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">9.2<animate attributeName="opacity" to="1" begin="32.3s;loop.end+32.3s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+    </g>
+
+    <!-- Bar 2: Anthropic Solutions Architect — 8.9 -->
+    <g transform="translate(80,330)">
+      <text x="0" y="0" class="sans b" font-size="18" fill="#f1f5f9">Solutions Architect, Enterprise</text>
+      <text x="0" y="22" class="mono" font-size="13" fill="#64748b">Anthropic · SF/hybrid · $200K–$280K + equity</text>
+      <rect x="0" y="42" width="980" height="20" rx="10" fill="#1a2230"/>
+      <rect x="0" y="42" width="0" height="20" rx="10" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="872.2" begin="32.5s;loop.end+32.5s" dur="1.1s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="1010" y="58" class="mono b" font-size="22" fill="#10b981">
+        <tspan opacity="0">0.0<animate attributeName="opacity" to="1" begin="32.5s;loop.end+32.5s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="32.85s;loop.end+32.85s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">3.2<animate attributeName="opacity" to="1" begin="32.85s;loop.end+32.85s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="33.15s;loop.end+33.15s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">6.0<animate attributeName="opacity" to="1" begin="33.15s;loop.end+33.15s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="33.4s;loop.end+33.4s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">7.7<animate attributeName="opacity" to="1" begin="33.4s;loop.end+33.4s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="33.6s;loop.end+33.6s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">8.9<animate attributeName="opacity" to="1" begin="33.6s;loop.end+33.6s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+    </g>
+
+    <!-- Bar 3: Replit Senior PM — 8.6 -->
+    <g transform="translate(80,440)">
+      <text x="0" y="0" class="sans b" font-size="18" fill="#f1f5f9">Senior Product Manager, Agents</text>
+      <text x="0" y="22" class="mono" font-size="13" fill="#64748b">Replit · remote · $190K–$240K + equity</text>
+      <rect x="0" y="42" width="980" height="20" rx="10" fill="#1a2230"/>
+      <rect x="0" y="42" width="0" height="20" rx="10" fill="url(#emerald)">
+        <animate attributeName="width" from="0" to="842.8" begin="33.8s;loop.end+33.8s" dur="1.1s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" keyTimes="0;1"/>
+      </rect>
+      <text x="1010" y="58" class="mono b" font-size="22" fill="#10b981">
+        <tspan opacity="0">0.0<animate attributeName="opacity" to="1" begin="33.8s;loop.end+33.8s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="34.15s;loop.end+34.15s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">3.0<animate attributeName="opacity" to="1" begin="34.15s;loop.end+34.15s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="34.45s;loop.end+34.45s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">5.8<animate attributeName="opacity" to="1" begin="34.45s;loop.end+34.45s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="34.7s;loop.end+34.7s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">7.3<animate attributeName="opacity" to="1" begin="34.7s;loop.end+34.7s" dur="0.05s" fill="freeze"/><animate attributeName="opacity" to="0" begin="34.9s;loop.end+34.9s" dur="0.05s" fill="freeze"/></tspan>
+        <tspan opacity="0" x="1010" y="58">8.6<animate attributeName="opacity" to="1" begin="34.9s;loop.end+34.9s" dur="0.05s" fill="freeze"/></tspan>
+      </text>
+    </g>
+
+    <!-- summary tally -->
+    <g opacity="0">
+      <animate attributeName="opacity" values="0;1" keyTimes="0;1" dur="0.4s" begin="36s;loop.end+36s" fill="freeze"/>
+      <rect x="80" y="550" width="1120" height="80" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1"/>
+      <text x="120" y="585" class="sans" font-size="14" fill="#64748b" letter-spacing="2">SCORE DISTRIBUTION</text>
+      <text x="120" y="615" class="sans b" font-size="18" fill="#cbd5e1">
+        <tspan fill="#10b981">5 high-fit</tspan> (≥8.0)  ·  <tspan fill="#f59e0b">12 worth-considering</tspan> (7.0–7.9)  ·  <tspan fill="#64748b">30 below threshold</tspan>
+      </text>
+      <text x="1180" y="600" text-anchor="end" class="mono b" font-size="36" fill="#10b981">47/47</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 6 — CARD REVEAL (42–52s)
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.05;0.94;1" dur="10s" begin="42s;loop.end+42s" fill="freeze"/>
+
+    <!-- slide-up wipe -->
+    <rect x="0" y="0" width="1280" height="720" fill="#0c1018">
+      <animateTransform attributeName="transform" type="translate" from="0 0" to="0 -720" begin="42s;loop.end+42s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.7 0 0.3 1" keyTimes="0;1"/>
+    </rect>
+
+    <!-- header -->
+    <g class="sans">
+      <text x="80" y="80" font-size="14" fill="#10b981" class="b" letter-spacing="3">TOP MATCH</text>
+      <text x="80" y="118" font-size="32" fill="#f1f5f9" class="b">Modal Labs · Forward Deployed Engineer, ML</text>
+    </g>
+
+    <!-- The card -->
+    <g transform="translate(80,160)">
+      <rect width="1120" height="480" rx="20" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1" filter="url(#dropShadow)"/>
+
+      <!-- left column -->
+      <g transform="translate(40,40)">
+        <text x="0" y="0" class="sans" font-size="13" fill="#64748b" letter-spacing="2">COMPANY</text>
+        <text x="0" y="32" class="sans b" font-size="24" fill="#f1f5f9">Modal Labs</text>
+
+        <text x="0" y="74" class="sans" font-size="13" fill="#64748b" letter-spacing="2">LOCATION</text>
+        <text x="0" y="106" class="sans" font-size="18" fill="#cbd5e1">Remote · US/EU</text>
+
+        <text x="0" y="148" class="sans" font-size="13" fill="#64748b" letter-spacing="2">COMP BAND</text>
+        <text x="0" y="180" class="sans b" font-size="22" fill="#10b981">$180K – $250K</text>
+        <text x="0" y="204" class="sans" font-size="14" fill="#94a3b8">+ early-stage equity</text>
+
+        <text x="0" y="248" class="sans" font-size="13" fill="#64748b" letter-spacing="2">STACK</text>
+        <g class="mono" font-size="13" fill="#cbd5e1">
+          <rect x="0" y="262" width="78" height="26" rx="13" fill="#1a2230"/><text x="39" y="280" text-anchor="middle">Python</text>
+          <rect x="86" y="262" width="64" height="26" rx="13" fill="#1a2230"/><text x="118" y="280" text-anchor="middle">CUDA</text>
+          <rect x="158" y="262" width="78" height="26" rx="13" fill="#1a2230"/><text x="197" y="280" text-anchor="middle">PyTorch</text>
+          <rect x="244" y="262" width="64" height="26" rx="13" fill="#1a2230"/><text x="276" y="280" text-anchor="middle">K8s</text>
+          <rect x="316" y="262" width="86" height="26" rx="13" fill="#1a2230"/><text x="359" y="280" text-anchor="middle">Modal SDK</text>
+        </g>
+
+        <text x="0" y="336" class="sans" font-size="13" fill="#64748b" letter-spacing="2">DEEP LINK</text>
+        <text x="0" y="368" class="mono" font-size="13" fill="#22d3ee">jobs.ashbyhq.com/modal/forward-deployed-ml</text>
+      </g>
+
+      <!-- divider -->
+      <line x1="540" y1="40" x2="540" y2="440" stroke="#1e293b" stroke-width="1"/>
+
+      <!-- right column: pitch -->
+      <g transform="translate(580,40)">
+        <text x="0" y="0" class="sans" font-size="13" fill="#64748b" letter-spacing="2">WHY THIS FITS — AI-GENERATED PITCH</text>
+
+        <!-- typewriter first 2 lines -->
+        <g class="sans" font-size="16" fill="#e2e8f0">
+          <!-- line 1 -->
+          <text x="0" y="34">
+            <tspan opacity="0">Your three years shipping<animate attributeName="opacity" to="1" begin="43.5s;loop.end+43.5s" dur="0.01s" fill="freeze"/></tspan><tspan opacity="0"> low-latency<animate attributeName="opacity" to="1" begin="44.0s;loop.end+44.0s" dur="0.01s" fill="freeze"/></tspan><tspan opacity="0"> inference<animate attributeName="opacity" to="1" begin="44.3s;loop.end+44.3s" dur="0.01s" fill="freeze"/></tspan><tspan opacity="0"> at scale<animate attributeName="opacity" to="1" begin="44.6s;loop.end+44.6s" dur="0.01s" fill="freeze"/></tspan>
+          </text>
+          <!-- line 2 -->
+          <text x="0" y="58">
+            <tspan opacity="0">map directly to Modal's<animate attributeName="opacity" to="1" begin="44.9s;loop.end+44.9s" dur="0.01s" fill="freeze"/></tspan><tspan opacity="0"> FDE-ML mandate:<animate attributeName="opacity" to="1" begin="45.3s;loop.end+45.3s" dur="0.01s" fill="freeze"/></tspan>
+          </text>
+        </g>
+
+        <!-- rest of pitch — fades in as block at 45.8s -->
+        <g class="sans" font-size="15" fill="#cbd5e1" opacity="0">
+          <animate attributeName="opacity" values="0;1" dur="0.5s" begin="45.8s;loop.end+45.8s" fill="freeze"/>
+          <text x="0" y="92">embed with enterprise customers, port their</text>
+          <text x="0" y="114">training and inference pipelines onto Modal's</text>
+          <text x="0" y="136">serverless GPU fabric, then write the playbook</text>
+          <text x="0" y="158">that lets the field team repeat the win.</text>
+          <text x="0" y="186" class="b" fill="#f1f5f9">Strong signals:</text>
+          <text x="0" y="210"><tspan fill="#10b981">•</tspan> Built a 12K-RPS inference gateway at $LAST_CO</text>
+          <text x="0" y="232"><tspan fill="#10b981">•</tspan> Two prior FDE rotations (Snowflake, Databricks)</text>
+          <text x="0" y="254"><tspan fill="#10b981">•</tspan> Open-source PyTorch contrib (1.2k stars)</text>
+          <text x="0" y="278"><tspan fill="#10b981">•</tspan> Already running Modal in side-project pipeline</text>
+        </g>
+      </g>
+
+      <!-- MATCH SCORE badge top-right -->
+      <g transform="translate(960,-20)" opacity="0">
+        <animate attributeName="opacity" values="0;1" dur="0.4s" begin="42.8s;loop.end+42.8s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="scale" from="0.6" to="1" begin="42.8s;loop.end+42.8s" dur="0.5s" fill="freeze" calcMode="spline" keySplines="0.2 1.6 0.4 1" keyTimes="0;1" additive="sum"/>
+        <rect x="0" y="0" width="160" height="80" rx="40" fill="#10b981" filter="url(#dropShadow)"/>
+        <text x="80" y="36" text-anchor="middle" class="sans b" font-size="11" fill="#064e3b" letter-spacing="2">MATCH SCORE</text>
+        <text x="80" y="66" text-anchor="middle" class="sans b" font-size="28" fill="#ffffff">9.2</text>
+      </g>
+    </g>
+
+    <!-- footer cta -->
+    <g opacity="0">
+      <animate attributeName="opacity" values="0;1" dur="0.4s" begin="48s;loop.end+48s" fill="freeze"/>
+      <text x="80" y="680" class="sans" font-size="16" fill="#64748b">Report saved · <tspan fill="#cbd5e1" class="mono">out/2026-05-21-jobscout.md</tspan></text>
+      <text x="1200" y="680" text-anchor="end" class="sans" font-size="16" fill="#94a3b8">2 more matches in your inbox →</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       SCENE 7 — CALL TO ACTION (52–60s)
+       ===================================================================== -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;1" keyTimes="0;0.07;0.94;1" dur="8s" begin="52s;loop.end+52s" fill="freeze"/>
+
+    <!-- fade to dark -->
+    <rect x="0" y="0" width="1280" height="720" fill="#070a10" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="52s;loop.end+52s" dur="0.6s" fill="freeze"/>
+    </rect>
+
+    <!-- ambient glow -->
+    <ellipse cx="640" cy="360" rx="500" ry="280" fill="url(#radialFade)"/>
+
+    <!-- logo glyph: stylized "j" mark in a rounded square -->
+    <g transform="translate(540,200)" opacity="0">
+      <animate attributeName="opacity" values="0;1" dur="0.6s" begin="52.3s;loop.end+52.3s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="scale" from="0.7" to="1" begin="52.3s;loop.end+52.3s" dur="0.7s" fill="freeze" calcMode="spline" keySplines="0.2 1.6 0.4 1" keyTimes="0;1" additive="sum"/>
+      <rect x="0" y="0" width="200" height="200" rx="48" fill="#0c1018" stroke="#10b981" stroke-width="3"/>
+      <!-- letter j -->
+      <text x="100" y="146" text-anchor="middle" class="sans b" font-size="140" fill="#10b981">j</text>
+      <!-- accent dots forming a small arc -->
+      <circle cx="100" cy="40" r="6" fill="#10b981" opacity="0.5"/>
+    </g>
+
+    <!-- wordmark + tagline -->
+    <g class="sans" text-anchor="middle">
+      <text x="640" y="470" font-size="56" fill="#f1f5f9" class="b" opacity="0">
+        job-search-agent
+        <animate attributeName="opacity" values="0;1" dur="0.6s" begin="52.8s;loop.end+52.8s" fill="freeze"/>
+      </text>
+      <text x="640" y="520" font-size="22" fill="#94a3b8" opacity="0">
+        Wake up to the right roles.
+        <animate attributeName="opacity" values="0;1" dur="0.6s" begin="53.2s;loop.end+53.2s" fill="freeze"/>
+      </text>
+    </g>
+
+    <!-- repo URL pill with soft pulse -->
+    <g transform="translate(440,580)" opacity="0">
+      <animate attributeName="opacity" values="0;1" dur="0.6s" begin="53.8s;loop.end+53.8s" fill="freeze"/>
+      <rect x="0" y="0" width="400" height="60" rx="30" fill="#10b981" opacity="0.12">
+        <animate attributeName="opacity" values="0.08;0.2;0.08" dur="2.2s" begin="53.8s;loop.end+53.8s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="0" y="0" width="400" height="60" rx="30" fill="none" stroke="#10b981" stroke-width="1.5"/>
+      <text x="200" y="38" text-anchor="middle" class="mono b" font-size="18" fill="#10b981">
+        github.com/USER/job-search-agent
+      </text>
+    </g>
+
+    <!-- footer hint -->
+    <text x="640" y="680" text-anchor="middle" class="sans" font-size="13" fill="#475569" opacity="0">
+      MIT licensed · runs locally · no cloud dependencies
+      <animate attributeName="opacity" values="0;1" dur="0.5s" begin="54.5s;loop.end+54.5s" fill="freeze"/>
+    </text>
+  </g>
+
+</svg>

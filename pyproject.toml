@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "job-search-agent"
+version = "0.1.0"
+description = "A daily, local-first, LLM-scored job-search agent. Curated allow-list, multi-ATS, zero dependencies."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "Job Search Agent Contributors" }]
+keywords = ["job-search", "ats", "agent", "llm", "mlx", "local-first"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+    "Topic :: Utilities",
+]
+# Intentionally empty: the project runs on the Python standard library alone.
+# The optional Anthropic fallback path uses raw urllib, not the `anthropic` SDK.
+dependencies = []
+
+[project.optional-dependencies]
+# Nothing required to use the tool. The "dev" group is just for local
+# development conveniences (running tests with prettier output, linting).
+dev = [
+    "ruff>=0.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/job-search-agent"
+Repository = "https://github.com/your-org/job-search-agent"
+Issues = "https://github.com/your-org/job-search-agent/issues"
+
+[project.scripts]
+jobscout = "jobscout:main"
+
+[tool.setuptools]
+py-modules = ["jobscout", "filters", "scorer", "output"]
+
+[tool.setuptools.packages.find]
+include = ["connectors*"]
+exclude = ["tests*", "examples*", "docs*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"

@@ -1,0 +1,35 @@
+# narration.wav — transcript & beat sync
+
+**Voice:** Apple `say` — Samantha (en_US, default base voice, rate 160 wpm)
+**Source script:** `SYNC_TABLE.md` §"Narration-to-scene sync" (12-beat / 60s SMIL master loop)
+**Final duration:** 58.73 s · loudness: EBU R128 (I=-16 LUFS, TP=-1.5 dBTP, LRA=11)
+**Sample format:** 48 kHz / 16-bit PCM / mono · MP3 mirror: 192 kbps CBR
+
+---
+
+## Beat-by-beat timing
+
+| # | Target (s) | Actual (s) | Drift (s) | Line |
+|---|------------|------------|-----------|------|
+| 1  | 3.50  | 3.50  | +0.00 | Every morning the agent wakes up — no logins, no scraping, just the public boards. |
+| 2  | 8.00  | 8.87  | +0.87 | Credentials load. Connectors open. The market scan starts. |
+| 3  | 12.50 | 13.00 | +0.50 | Twelve hundred open roles across six public AI companies — in two and a half seconds. |
+| 4  | 18.00 | 18.20 | +0.20 | Ashby, Greenhouse, Lever. All six boards, one pipeline. |
+| 5  | 22.50 | 22.89 | +0.39 | Then the filter pipeline kills the obvious misses — wrong level, already applied, score below seven. |
+| 6  | 27.00 | 29.14 | +2.14 | Six thousand candidates become forty-seven. |
+| 7  | 30.50 | 31.90 | +1.40 | A local LLM scores every survivor against your portfolio — your real ships, your real numbers. |
+| 8  | 36.00 | 37.88 | +1.88 | Five high-fit. Twelve worth a second look. Top three sorted and ready. |
+| 9  | 42.50 | 42.50 | +0.00 | The number-one match: a Forward Deployed ML role at Modal. Comp, stack, deep link, and a 200-word pitch — pre-written. |
+| 10 | 48.00 | 50.87 | +2.87 | Saved to portable markdown. Two more matches already in your inbox. |
+| 11 | 52.50 | 55.14 | +2.64 | Clone it. Edit your credentials. Wake up to the right roles. |
+
+Max drift: +2.87 s (beat 10). All beats within the ±3 s tolerance window.
+
+---
+
+## Production notes
+
+- Why we switched from VIDEO_PLAN.md §5 to SYNC_TABLE.md: §5 carries the pre-2026-05-21 single-terminal-scene narration (10 beats packed into a 58 s loop). The 12-beat / 60 s SYNC_TABLE supersedes it (see `SYNC_TABLE.md` §"Drift remediation log"). VIDEO_PLAN.md §5 should be re-synced to the new table on the next docs pass.
+- Why Samantha (base) instead of "Enhanced": macOS shipped without the optional Enhanced voice packs on this machine. Base Samantha is still the cleanest neutral US-English option in `say`'s catalog for technical narration. To upgrade quality on a re-render, install the Enhanced voice pack from **System Settings → Accessibility → Spoken Content → System Voice → Manage Voices…** and re-run with `say -v "Samantha (Enhanced)"`.
+- Per-beat AIFFs were rendered individually, converted to 48 kHz mono WAV, then mixed onto a single timeline using `ffmpeg adelay` + `amix` so each beat lands at its calibrated start offset. This avoids cumulative pacing drift that affects single-pass `say` renders.
+- Loudness normalized in a second pass: `loudnorm=I=-16:TP=-1.5:LRA=11`.
